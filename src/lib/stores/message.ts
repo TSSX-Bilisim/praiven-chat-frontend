@@ -7,8 +7,8 @@ type messageStore = {
     userDraft: Record<string, Message | null>;
 
     setMessages: (chatId: string, messages: Message[]) => void;
-    setUserDraft: (chatId: string, message: Message) => void;
-    setAIDraft: (chatId: string, message: Message) => void;
+    setUserDraft: (chatId: string, message: Message | null) => void;
+    setAIDraft: (chatId: string, message: Message | null) => void;
 
     addUserDraft: (chatId: string, message: Message) => void;
     addAIDraft : (chatId: string, message: Message) => void;
@@ -31,13 +31,13 @@ export const useMessageStore = create<messageStore>(
                 [chatId]: messages
             }
         })),
-        setUserDraft: (chatId: string, message: Message) => set((state) => ({
+        setUserDraft: (chatId: string, message: Message | null) => set((state) => ({
             userDraft: {
                 ...state.userDraft,
                 [chatId]: message
             }
         })),
-        setAIDraft: (chatId: string, message: Message) => set((state) => ({
+        setAIDraft: (chatId: string, message: Message | null) => set((state) => ({
             aiDraft: {
                 ...state.aiDraft,
                 [chatId]: message

@@ -23,7 +23,7 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/" element={<LandingPage />} />
         <Route element={<ChatLayout />}>
           <Route path="/chat" element={<NewChatPage />} />
-          <Route path="/chat/:id" element={<ChatPage />} />
+          <Route path="/chat/:chatId" element={<ChatPage />} />
         </Route>
         <Route element={<AuthLayout />}>
           <Route path="/login" element={<LoginPage />} />
