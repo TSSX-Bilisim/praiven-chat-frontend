@@ -33,7 +33,7 @@ export function NavChats() {
           })}
           {hasMore && !loading && !error && ( 
             <SidebarMenuItem>
-                <SidebarMenuButton onClick={() => loadChats()}>
+                <SidebarMenuButton onClick={() => loadChats()} className="cursor-pointer">
                     Load more
                 </SidebarMenuButton>
             </SidebarMenuItem>            
