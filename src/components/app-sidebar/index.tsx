@@ -12,7 +12,6 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="icon">
       <AppSidebarHeader />
-
       <SidebarContent>
         <NavChats />
         <SidebarGroup />

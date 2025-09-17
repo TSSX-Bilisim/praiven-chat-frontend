@@ -1,4 +1,3 @@
-'use client';
 import { Link} from "react-router"
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "../ui/sidebar"
 import { PencilLine, Search } from "lucide-react"

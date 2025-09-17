@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState, useRef } from "react"
 import { useNavigate } from "react-router"
 
 export function useChatList() {
-  const { chats, addChats } = useChatStore((state) => state)
+  const { chats, addChats } = useChatStore()
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const hasMoreRef = useRef(false)

@@ -1,4 +1,3 @@
-'use client'
 import { Flex } from "@radix-ui/themes";
 import { SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import { NavMain } from "@/components/app-sidebar/nav-main";

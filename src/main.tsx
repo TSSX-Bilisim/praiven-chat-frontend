@@ -29,6 +29,7 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<RegisterPage />} />
         </Route>
+        <Route path="*" element={<div>Not Found</div>}/>
       </Routes>
     </Theme>
     </ThemeProvider>

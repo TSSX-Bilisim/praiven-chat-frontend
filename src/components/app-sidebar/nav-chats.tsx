@@ -1,7 +1,7 @@
 import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "../ui/sidebar";
 import { Loader } from "../ai-elements/loader";
 import { Link, useParams } from "react-router";
-import { useChatList } from "@/hooks/use-chat-list";
+import { useChatList } from "@/lib/hooks/use-chat-list";
 
 export function NavChats() {
   const activeChatId = useParams().chatId;
@@ -19,12 +19,12 @@ export function NavChats() {
                 </SidebarMenuButton>
             </SidebarMenuItem>
           )}
-          {chats.map((item) => {
+          {chats && chats.map((item) => {
             const isActive = item.id === activeChatId;
             return (
                 <SidebarMenuItem key={item.id}>
                     <SidebarMenuButton asChild isActive={isActive}>
-                        <Link to={`/c/${item.id}`} className="whitespace-nowrap">
+                        <Link to={`/chat/${item.id}`} className="whitespace-nowrap">
                             {item.title}
                         </Link>
                     </SidebarMenuButton>
