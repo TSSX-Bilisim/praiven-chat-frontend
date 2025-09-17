@@ -9,6 +9,7 @@ export default function ChatPage() {
   const { loadMessages } = useMessages();
   useEffect(() => {
     loadMessages(chatId);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatId]);
 
   return (
