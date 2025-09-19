@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { fetchMessages } from "../api/message";
 import { useMessageStore } from "../stores/message";
 import { useNavigate } from "react-router";
@@ -9,7 +9,7 @@ export function useMessages() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const loadMessages = async (chatId: string) => {
+  const loadMessages = useCallback(async (chatId: string) => {
     setError(null);
     try {
       setLoading(true);
@@ -35,7 +35,7 @@ export function useMessages() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [navigate, store]);
 
   // Placeholder for message fetching logic
   return {

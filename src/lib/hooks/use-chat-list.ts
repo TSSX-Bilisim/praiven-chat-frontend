@@ -13,7 +13,7 @@ export function useChatList() {
       const response = await fetchChats(pageParam, 10)
 
       if (response.statusCode === 401) {
-        navigate("/auth/login")
+        navigate("/login")
         throw new Error("Unauthorized. Redirecting to login.")
       }
       if (!response.success) {

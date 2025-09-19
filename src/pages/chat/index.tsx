@@ -8,9 +8,10 @@ export default function ChatPage() {
   const chatId = params.chatId!
   const { loadMessages } = useMessages();
   useEffect(() => {
+    console.log("ChatPage useEffect - chatId:", chatId);
     loadMessages(chatId);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chatId]);
+  }, []);
 
   return (
     <div>
