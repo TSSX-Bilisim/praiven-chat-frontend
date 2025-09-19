@@ -11,7 +11,7 @@ export function PromptSendButton({ chatId }: PromptSendButtonProps) {
   const isLoading = !!userDraft[chatId]
 
   return (
-    <Button type="submit" disabled={isLoading}>
+    <Button variant={"ghost"} type="submit" disabled={isLoading}>
       {isLoading ? <Loader className="w-4 h-4 animate-spin" /> : <Send/>}
     </Button>
   )

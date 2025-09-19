@@ -27,7 +27,7 @@ export function PromptModelSelect<T extends FieldValues>({ control, name }: Prom
             value={activeModel?.id ? String(activeModel.id) : ""}
           >
             <FormControl>
-              <SelectTrigger>
+              <SelectTrigger className="border-none dark:bg-input/0">
                 <SelectValue placeholder="Select a model" />
               </SelectTrigger>
             </FormControl>

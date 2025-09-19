@@ -13,6 +13,12 @@ import { PromptSendButton } from "./submit-button";
 import { PromptTextArea } from "./text-area";
 import { Flex } from "@radix-ui/themes";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { createChat } from "@/lib/api/chat";
+import { Button } from "@/components/ui/button";
+import { Loader, Send } from "lucide-react";
+import { useState } from "react";
+import { useNavigate } from "react-router";
+import { useChatStore } from "@/lib/stores/chat";
 
 function PromptInput({ chatid }: { chatid: string }) {
     const { sendMessage } = useMessages();
@@ -32,12 +38,12 @@ function PromptInput({ chatid }: { chatid: string }) {
     return (
     <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-            <Card>
-                <CardContent>
+            <Card className="w-full xl:w-2/3 mx-auto p-2 gap-0">
+                <CardContent className="p-2">
                     <PromptTextArea control={form.control} name="content" />
 
                 </CardContent>
-                <CardFooter className="flex items-center justify-between w-full">
+                <CardFooter className="flex items-center justify-between w-full px-2">
                     <Flex gap={'2'}>
                         <ProviderSelect />
                         <PromptModelSelect control={form.control} name="modelId" />
@@ -49,5 +55,59 @@ function PromptInput({ chatid }: { chatid: string }) {
     </Form>
     )
 }
+function NewPromptInput() {
+    const [isLoading, setIsLoading] = useState(false);
+    const { sendMessage } = useMessages();
+    const navigate = useNavigate();
+    const { addChats } = useChatStore();
+    const form = useForm<z.infer<typeof promptschema>>({
+        resolver: zodResolver(promptschema),
+        defaultValues: {
+            content: "",
+            modelId: 1,
+        },
+    });
 
-export { PromptInput };
+    async function onSubmit(data: z.infer<typeof promptschema>) {
+        setIsLoading(true);
+        try {
+            if (data.content.trim() === "") return;
+            const response = await createChat();
+            if (!response.success) throw new Error("Failed to create chat");
+            const chat = response.data?.chat;
+            if (!chat) throw new Error("Chat not found in response");
+            navigate(`/chat/${chat.id}`);
+            addChats([chat]);
+            sendMessage(chat.id, data.content, data.modelId);
+            form.reset();
+            return;
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setIsLoading(false);
+        }
+        form.reset();
+    }
+    return (
+        <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
+                <Card className="w-full xl:w-2/3 mx-auto p-2 gap-0">
+                    <CardContent className="p-2">
+                        <PromptTextArea control={form.control} name="content" />
+                    </CardContent>
+                    <CardFooter className="flex items-center justify-between w-full px-2">
+                        <Flex gap={'2'}>
+                            <ProviderSelect />
+                            <PromptModelSelect control={form.control} name="modelId" />
+                        </Flex>
+                        <Button variant={"ghost"} type="submit" disabled={isLoading}>
+                            {isLoading ? <Loader className="w-4 h-4 animate-spin" /> : <Send/>}
+                        </Button>
+                    </CardFooter>
+                </Card>
+            </form>
+        </Form>
+    )
+}
+
+export { PromptInput, NewPromptInput };

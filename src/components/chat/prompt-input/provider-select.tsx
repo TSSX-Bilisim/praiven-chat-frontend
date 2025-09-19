@@ -11,14 +11,15 @@ export function ProviderSelect() {
       onValueChange={(val) => changeProvider(Number(val))}
       value={activeProvider?.id ? String(activeProvider.id) : ""}
     >
-      <SelectTrigger>
+      <SelectTrigger className="border-none dark:bg-input/0">
         <SelectValue placeholder="Select provider" />
       </SelectTrigger>
-      <SelectContent side="top">
+      <SelectContent side="top" className="p-0">
         {!providerLoading &&
           providers.map((provider) => (
             <SelectItem key={provider.id} value={String(provider.id)}>
-              {provider.name}
+              {provider.name === 'OPENAI' && 'OpenAI'}
+              {provider.name === 'GEMINI' && 'Gemini'}
             </SelectItem>
           ))}
       </SelectContent>

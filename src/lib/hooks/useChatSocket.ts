@@ -19,6 +19,7 @@ export function useChatSocket() {
     // Stream tamamlandığında
     socket.on('message.masked', (data: { chatId: string; senderId: number; maskedContent: string; entities: MessageEntity[] }) => {
       store.applyMask(data.chatId, data.maskedContent, data.entities);
+      store.finalizeUserMessage(data.chatId);
     });
 
     socket.on('llm.draft.created', (data: { message: Message }) => {
@@ -31,7 +32,6 @@ export function useChatSocket() {
 
     socket.on('llm.stream.completed', (data: { chatId: string }) => {
       store.finalizeAIMessage(data.chatId);
-      store.finalizeUserMessage(data.chatId);
     });
 
     return () => {
