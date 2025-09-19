@@ -12,9 +12,7 @@ export default function ChatLayout() {
     <QueryClientProvider client={queryClient}>
       <SidebarProvider>
         <AppSidebar />
-        <main>
-          <Outlet />
-        </main>
+        <Outlet />
       </SidebarProvider>
     </QueryClientProvider>
   );

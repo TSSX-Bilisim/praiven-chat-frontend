@@ -56,7 +56,7 @@ export const useMessageStore = create<messageStore>(
                     [chatId]: state.userDraft[chatId] ? {
                         ...state.userDraft[chatId]!,
                         maskedContent: maskedContent,
-                        entities: entities
+                        entities: entities,
                     } : null
                 }
             }))),
@@ -71,15 +71,20 @@ export const useMessageStore = create<messageStore>(
                 }
             })),
         finalizeUserMessage: (chatId: string) =>
-            set((state) => ({
-                messages: {
-                    ...state.messages,
-                    [chatId]: state.userDraft[chatId] ? 
-                    [...(state.messages[chatId] || []), state.userDraft[chatId]!]
-                    : (state.messages[chatId] || [])
-                },
-                userDraft: {...state.userDraft, [chatId]: null}
-            })),
+            set((state) => {
+                const draft = state.userDraft[chatId];
+                if (!draft) return state;
+                return {
+                    messages: {
+                        ...state.messages,
+                        [chatId]: [...(state.messages[chatId] || []), draft],
+                    },
+                    userDraft: {
+                        ...state.userDraft,
+                        [chatId]: null, // draft'ı temizle
+                    },
+                }
+            }),
         finalizeAIMessage: (chatId: string) =>
             set((state) => ({
                 messages: {
