@@ -7,6 +7,7 @@ export async function fetchChats(offset: number, limit: number) {
     headers: {
       'Content-Type': 'application/json',
     },
+    credentials: 'include',
   });
 
   return response;
@@ -16,6 +17,7 @@ export async function createChat() {
   const res = await apiFetch<{ chat: Chat }>("/chats", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      credentials: 'include',
   });
 
   return res;

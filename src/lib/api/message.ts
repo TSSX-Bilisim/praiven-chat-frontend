@@ -8,6 +8,7 @@ async function fetchMessages(chatId: string) {
             "Content-Type": "application/json",
             'x-chat-id': chatId,
         },
+        credentials:'include'
     });
 
     return res;
@@ -22,6 +23,7 @@ async function createMessage(chatId: string, modelId: number, content: string) {
             'x-model-id': String(modelId),
         },
         body: JSON.stringify({ content }),
+        credentials: 'include',
     });
 
     return res;
@@ -33,6 +35,7 @@ async function fetchLastMessage() {
         headers: { 
             "Content-Type": "application/json",
         },
+        credentials: 'include',
     });
 
     return res;

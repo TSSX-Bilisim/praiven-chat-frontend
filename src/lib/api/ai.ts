@@ -7,6 +7,7 @@ async function fetchAvailableAIModels() {
     headers: {
       'Content-Type': 'application/json',
     },
+    credentials: 'include',
   });
 
   return response;
@@ -18,6 +19,7 @@ async function fetchAvailableAIProviders() {
     headers: {
       'Content-Type': 'application/json',
     },
+    credentials: 'include',
   });
 
   return response;
