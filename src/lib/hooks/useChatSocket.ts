@@ -11,7 +11,7 @@ export function useChatSocket() {
 
   useEffect(() => {
     if (!socket) {
-      socket = io("/api", {
+      socket = io("/", {
         withCredentials: true,
       });
     }
