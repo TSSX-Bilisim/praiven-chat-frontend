@@ -11,7 +11,7 @@ export function useChatSocket() {
 
   useEffect(() => {
     if (!socket) {
-      socket = io("http://localhost:3002/", {
+      socket = io("/api", {
         withCredentials: true,
       });
     }
