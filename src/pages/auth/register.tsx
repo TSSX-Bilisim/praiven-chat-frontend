@@ -28,7 +28,7 @@ function RegisterPage() {
     <Flex justify={'center'} align={'center'}>
       <small> Already have an account? </small>
       <Button variant="link" asChild>
-        <Link to={"/auth/login"}><small>Sign In</small></Link>
+        <Link to={"/login"}><small>Sign In</small></Link>
       </Button>
     </Flex>
     </Flex>

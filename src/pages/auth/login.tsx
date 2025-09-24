@@ -31,7 +31,7 @@ function LoginPage() {
       <Flex justify={'center'} align={'center'}>
         <small> Need an account? </small>
         <Button variant="link" asChild>
-          <Link to={"/auth/signup"}><small>Sign Up</small></Link>
+          <Link to={"/signup"}><small>Sign Up</small></Link>
         </Button>
       </Flex>
     </Flex>
