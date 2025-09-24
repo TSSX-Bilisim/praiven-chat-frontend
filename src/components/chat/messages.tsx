@@ -44,7 +44,7 @@ export function Messages({ chatId }: MessagesProps) {
           </Message>
         ))}
         {/* yeni mesajlar */}
-        {(currentUserDraft && currentAiDraft) &&(
+        {(currentUserDraft) &&(
           <Message from="user" key={currentUserDraft.id}>
             <MessageContent variant="flat">
               {currentUserDraft.maskedContent && isMasked ? currentUserDraft.maskedContent : currentUserDraft.content}
