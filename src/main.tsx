@@ -2,10 +2,9 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './styles/global.css'
 import "@radix-ui/themes/styles.css";
-import { BrowserRouter, Route, Routes } from "react-router";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router";
 import { Theme } from '@radix-ui/themes';
 import { ThemeProvider } from 'next-themes';
-import LandingPage from './pages/landing';
 import ChatLayout from './layouts/chat';
 import NewChatPage from './pages/chat/new-chat';
 import ChatPage from './pages/chat';
@@ -20,7 +19,7 @@ createRoot(document.getElementById('root')!).render(
     <ThemeProvider attribute="class">
     <Theme>
       <Routes>
-        <Route path="/" element={<LandingPage />} />
+        <Route path="/" element={<Navigate to="/chat" />} />
         <Route element={<ChatLayout />}>
           <Route path="/chat" element={<NewChatPage />} />
           <Route path="/chat/:chatId" element={<ChatPage />} />
