@@ -44,21 +44,23 @@ function PromptInput({ chatid }: { chatid: string }) {
         <PromptInputContainer
           className="w-full relative z-10 py-4"
         >
-          <PromptTextArea control={form.control} name="content" />
-          <PromptInputActions className="flex w-full items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
-              <PromptInputAction tooltip="Select Provider">
-              <ProviderSelect />
-              </PromptInputAction>
-              <PromptInputAction tooltip="Select Model">
-                <PromptModelSelect control={form.control} name="modelId" />
-              </PromptInputAction>
-            </div>
-              <PromptInputAction tooltip={isLoading ? "Stop generation" : "Send message"}
-              >
-                <PromptSendButton chatId={chatid} />
-              </PromptInputAction>
-          </PromptInputActions>
+          <Flex gap={'5'} px={'3'} direction={'column'}>
+            <PromptTextArea control={form.control} name="content" />
+            <PromptInputActions className="flex w-full items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <PromptInputAction tooltip="Select Provider">
+                <ProviderSelect />
+                </PromptInputAction>
+                <PromptInputAction tooltip="Select Model">
+                  <PromptModelSelect control={form.control} name="modelId" />
+                </PromptInputAction>
+              </div>
+                <PromptInputAction tooltip={isLoading ? "Stop generation" : "Send message"}
+                >
+                  <PromptSendButton chatId={chatid} />
+                </PromptInputAction>
+            </PromptInputActions>
+          </Flex>
         </PromptInputContainer>
       </form>
     </Form>
