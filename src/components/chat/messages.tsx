@@ -1,39 +1,32 @@
 import { useMessages } from "@/lib/hooks/use-messages"
-import {
-  Conversation,
-  ConversationContent,
-  ConversationScrollButton,
-} from '@/components/ai-elements/conversation';
 import { Message, MessageContent } from '@/components/ai-elements/message';
 import { Loader } from "../ui/loader";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { Response } from '@/components/ai-elements/response';
 import { useChatFeatureStore } from "@/lib/stores/chatFeature";
+import { ChatContainerContent, ChatContainerRoot } from "../ui/chat-container";
+import { ScrollButton } from "../ui/scroll-button";
 
 interface MessagesProps {
   chatId: string
 }
 
 export function Messages({ chatId }: MessagesProps) {
+  const chatContainerRef = useRef<HTMLDivElement>(null)
   const { messages, userDraft, aiDraft, loading, error } = useMessages();
   const { isMasked } = useChatFeatureStore();
 
   const currentUserDraft = userDraft[chatId];
   const currentAiDraft = aiDraft[chatId];
   const currentMessages = messages[chatId];
-  const scrollRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    // Yeni mesaj geldiğinde otomatik scroll
-    scrollRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-  }, [currentMessages, currentUserDraft, currentAiDraft]);
 
   if (loading) return <p>Loading...</p>
   if (error) return <p>Error: {error.message}</p>
 
   return (
-    <Conversation className="w-full xl:w-2/3 mx-auto">
-      <ConversationContent>
+    <div ref={chatContainerRef} className="relative flex-1 overflow-y-auto">
+      <ChatContainerRoot className="h-full">
+        <ChatContainerContent className="space-y-6 px-5 py-12">
         {currentMessages?.map((message) => (
           <Message from={message.role} key={message.id}>
             <MessageContent variant="flat">
@@ -60,9 +53,11 @@ export function Messages({ chatId }: MessagesProps) {
             </MessageContent>
           </Message>
         )}
-        <div ref={scrollRef}/>
-      <ConversationScrollButton />
-      </ConversationContent>
-    </Conversation>
+      </ChatContainerContent>
+      <div className="absolute bottom-4 left-1/2 flex w-full -translate-x-1/2 justify-end px-5">
+        <ScrollButton className="shadow-sm" />
+      </div>
+    </ChatContainerRoot>
+  </div>
   )
 }
