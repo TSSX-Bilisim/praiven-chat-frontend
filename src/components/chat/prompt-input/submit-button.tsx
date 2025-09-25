@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button"
-import { Loader2 as Loader, Send } from "lucide-react"
+import { ArrowUp, Square } from "lucide-react"
 import { useMessageStore } from "@/lib/stores/message"
 
 interface PromptSendButtonProps {
@@ -7,12 +7,14 @@ interface PromptSendButtonProps {
 }
 
 export function PromptSendButton({ chatId }: PromptSendButtonProps) {
-  const { userDraft } = useMessageStore((state) => state)
-  const isLoading = !!userDraft[chatId]
+  const { userDraft, aiDraft } = useMessageStore((state) => state)
+  const isLoading = !!userDraft[chatId]  || !!aiDraft
 
   return (
     <Button variant={"ghost"} type="submit" disabled={isLoading}>
-      {isLoading ? <Loader className="w-4 h-4 animate-spin" /> : <Send/>}
+      {isLoading 
+        ? (<Square className="size-5 fill-current" />) 
+        : (<ArrowUp className="size-5" />)}
     </Button>
   )
 }

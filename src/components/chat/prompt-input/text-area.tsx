@@ -2,7 +2,7 @@
 
 import { FormControl, FormField, FormItem } from "@/components/ui/form"
 import type { FieldValues, Path, Control } from "react-hook-form"
-import { TextArea } from "@radix-ui/themes"
+import { PromptInputTextarea } from "@/components/ui/prompt-input"
 
 interface PromptTextAreaProps<T extends FieldValues> {
   control: Control<T>
@@ -22,10 +22,7 @@ export function PromptTextArea<T extends FieldValues>({
       render={({ field }) => (
         <FormItem>
           <FormControl>
-            <TextArea placeholder={placeholder} {...field} 
-              style={{ 
-                backgroundColor: "transparent"
-              }}/>
+            <PromptInputTextarea className="min-h-[44px]" placeholder={placeholder}  {...field} />
           </FormControl>
         </FormItem>
       )}

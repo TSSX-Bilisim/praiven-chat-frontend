@@ -19,9 +19,10 @@ import { Loader, Send } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { useChatStore } from "@/lib/stores/chat";
+import { PromptInputAction, PromptInputActions, PromptInput as PromptInputContainer} from '@/components/ui/prompt-input'
 
 function PromptInput({ chatid }: { chatid: string }) {
-    const { sendMessage } = useMessages();
+    const { sendMessage, userDraft, aiDraft } = useMessages();
     const form = useForm<z.infer<typeof promptschema>>({
         resolver: zodResolver(promptschema),
         defaultValues: {
@@ -30,6 +31,8 @@ function PromptInput({ chatid }: { chatid: string }) {
         },
     });
 
+    const isLoading = !!userDraft[chatid]  || !!aiDraft[chatid];
+
     function onSubmit(data: z.infer<typeof promptschema>) {
         sendMessage(chatid, data.content, data.modelId);
         form.reset();
@@ -37,21 +40,27 @@ function PromptInput({ chatid }: { chatid: string }) {
 
     return (
     <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-            <Card className="w-full xl:w-2/3 p-2 gap-0 relative z-10 py-4">
-                <CardContent className="p-2">
-                    <PromptTextArea control={form.control} name="content" />
-
-                </CardContent>
-                <CardFooter className="flex items-center justify-between w-full px-2">
-                    <Flex gap={'2'}>
-                        <ProviderSelect />
-                        <PromptModelSelect control={form.control} name="modelId" />
-                    </Flex>
-                    <PromptSendButton chatId={chatid} />
-                </CardFooter>
-            </Card>
-        </form>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <PromptInputContainer
+          className="w-full relative z-10 py-4"
+        >
+          <PromptTextArea control={form.control} name="content" />
+          <PromptInputActions className="flex w-full items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <PromptInputAction tooltip="Select Provider">
+              <ProviderSelect />
+              </PromptInputAction>
+              <PromptInputAction tooltip="Select Model">
+                <PromptModelSelect control={form.control} name="modelId" />
+              </PromptInputAction>
+            </div>
+              <PromptInputAction tooltip={isLoading ? "Stop generation" : "Send message"}
+              >
+                <PromptSendButton chatId={chatid} />
+              </PromptInputAction>
+          </PromptInputActions>
+        </PromptInputContainer>
+      </form>
     </Form>
     )
 }
