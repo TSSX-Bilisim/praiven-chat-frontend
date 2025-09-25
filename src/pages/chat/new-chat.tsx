@@ -21,7 +21,7 @@ export default function NewChatPage() {
       <div className="flex-shrink-0 p-2 border-b">
         <Flex align="center" justify="between" gap="2">
           {isMobile && <SidebarTrigger />}
-          <Button variant="ghost" onClick={() => toggleMasked()}>{isMasked ? <Eye /> : <EyeOff/>}</Button>
+          <Button variant="ghost" onClick={() => toggleMasked()}>{!isMasked ? <Eye /> : <EyeOff/>}</Button>
         </Flex>
 
       </div>
