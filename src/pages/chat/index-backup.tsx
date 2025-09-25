@@ -3,15 +3,18 @@ import { useMessages } from "@/lib/hooks/use-messages";
 import { useEffect } from "react";
 import { PromptInput } from "@/components/chat/prompt-input";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { useChatFeatureStore } from "@/lib/stores/chatFeature";
 import { Flex } from "@radix-ui/themes";
+import { Button } from "@/components/ui/button";
+import { Eye, EyeOff } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Messages } from "@/components/chat/messages";
-import MaskToggle from "@/components/chat/mask-toggle";
 
 export default function ChatPage() {
   const params = useParams()
   const chatId = params.chatId!
   const { loadMessages } = useMessages();
+  const { isMasked,toggleMasked } = useChatFeatureStore();
 
   const isMobile = useIsMobile();
 
@@ -20,23 +23,26 @@ export default function ChatPage() {
   }, [chatId]);
 
   return (
-  <main className="flex h-screen flex-col overflow-hidden">
+  <div className="flex flex-col h-screen w-full">
     {/* Üst bar */}
-    <header className="bg-background z-10 flex h-16 w-full shrink-0 items-center justify-between border-b px-4">
-      <Flex gap={'2'} align="center" direction={"row"}>
+    <div className="flex-shrink-0 p-2 border-b">
+      <Flex align="center" justify="between" gap="2">
         {isMobile && <SidebarTrigger />}
-        <div className="text-foreground">Chat Title</div>
+        <p>Chat ID: {chatId}</p>
+        <Button variant="ghost" onClick={() => toggleMasked()}>{!isMasked ? <Eye /> : <EyeOff/>}</Button>
       </Flex>
-      <MaskToggle />
-    </header>
+
+    </div>
 
     {/* Ortadaki mesaj alanı */}
-    <Messages chatId={chatId} />
+    <div className="flex-1 overflow-y-auto p-2">
+      <Messages chatId={chatId} />
+    </div>
 
     {/* Alt input */}
-    <div className="inset-x-0 bottom-0 mx-auto w-full max-w-3xl shrink-0 px-3 pb-3 md:px-5 md:pb-5">
-        <PromptInput chatid={chatId} />
+    <div className="flex-shrink-0 p-2 border-t">
+      <PromptInput chatid={chatId} />
     </div>
-  </main>
+  </div>
   )
 }

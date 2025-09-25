@@ -1,5 +1,5 @@
 import { AppSidebar } from "@/components/app-sidebar";
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { useChatSocket } from "@/lib/hooks/useChatSocket";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Outlet } from "react-router";
@@ -12,7 +12,9 @@ export default function ChatLayout() {
     <QueryClientProvider client={queryClient}>
       <SidebarProvider>
         <AppSidebar />
-        <Outlet />
+        <SidebarInset>
+          <Outlet />
+        </SidebarInset>
       </SidebarProvider>
     </QueryClientProvider>
   );
