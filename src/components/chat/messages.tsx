@@ -80,11 +80,11 @@ export function Messages({ chatId }: MessagesProps) {
         )}
         {currentAiDraft && (
           <Message from="assistant" key={currentAiDraft.id}>
-            <MessageContent variant="flat">
+            <div className={cn("bg-transparent text-foreground prose rounded-lg p-2")}>
               {currentAiDraft.content
-                ? currentAiDraft.content
-                : <Loader variant="circular" />}
-            </MessageContent>
+                ? <Markdown className="leading-relaxed space-y-4 px-4" components={customComponents}>{currentAiDraft.content}</Markdown>
+                : <Loader variant="typing" />}
+            </div>
           </Message>
         )}
       </ChatContainerContent>
