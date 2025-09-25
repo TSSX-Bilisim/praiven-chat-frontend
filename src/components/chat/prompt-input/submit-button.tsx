@@ -8,7 +8,7 @@ interface PromptSendButtonProps {
 
 export function PromptSendButton({ chatId }: PromptSendButtonProps) {
   const { userDraft, aiDraft } = useMessageStore((state) => state)
-  const isLoading = !!userDraft[chatId]  || !!aiDraft
+  const isLoading = !!userDraft[chatId]  || !!aiDraft[chatId]
 
   return (
     <Button variant={"ghost"} type="submit" disabled={isLoading}>
