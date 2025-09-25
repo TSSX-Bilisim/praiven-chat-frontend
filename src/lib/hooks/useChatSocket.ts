@@ -3,11 +3,13 @@ import type { Socket } from "socket.io-client";
 import { io } from "socket.io-client";
 import { useMessageStore } from "@/lib/stores/message";
 import type { Message, MessageEntity } from "../types/message";
+import { useChatStore } from "../stores/chat";
 
 let socket: Socket | null = null;
 
 export function useChatSocket() {
   const store = useMessageStore.getState();
+  const chatStore = useChatStore.getState();
 
   useEffect(() => {
     if (!socket) {
@@ -20,6 +22,7 @@ export function useChatSocket() {
     socket.on('message.masked', (data: { chatId: string; senderId: number; maskedContent: string; entities: MessageEntity[] }) => {
       store.applyMask(data.chatId, data.maskedContent, data.entities);
       store.finalizeUserMessage(data.chatId);
+      chatStore.updateTime(data.chatId);
     });
 
     socket.on('llm.draft.created', (data: { message: Message }) => {
@@ -32,6 +35,7 @@ export function useChatSocket() {
 
     socket.on('llm.stream.completed', (data: { chatId: string }) => {
       store.finalizeAIMessage(data.chatId);
+      chatStore.updateTime(data.chatId);
     });
 
     return () => {
