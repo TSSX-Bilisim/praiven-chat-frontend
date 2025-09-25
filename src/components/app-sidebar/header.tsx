@@ -5,9 +5,9 @@ import { NavMain } from "@/components/app-sidebar/nav-main";
 export function AppSidebarHeader () {
   const { state } = useSidebar();
   return (
-    <SidebarHeader>
-      <SidebarMenu>
-        <SidebarMenuItem className="flex justify-between pb-2">
+    <SidebarHeader className="py-0 px-2">
+      <SidebarMenu className="h-16 justify-center">
+        <SidebarMenuItem className="flex justify-between">
           { state === "expanded" && (
               <Flex gap="2" direction={"row"} align="center">
                   <div className="flex aspect-square size-8 items-center justify-center rounded-lg p-2">
