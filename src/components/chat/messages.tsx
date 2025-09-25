@@ -2,10 +2,41 @@ import { useMessages } from "@/lib/hooks/use-messages"
 import { Message, MessageContent } from '@/components/ai-elements/message';
 import { Loader } from "../ui/loader";
 import { useRef } from "react";
-import { Response } from '@/components/ai-elements/response';
 import { useChatFeatureStore } from "@/lib/stores/chatFeature";
 import { ChatContainerContent, ChatContainerRoot } from "../ui/chat-container";
 import { ScrollButton } from "../ui/scroll-button";
+import { cn } from "@/lib/utils";
+import { Markdown } from "../ui/markdown";
+import type { Components } from "react-markdown";
+
+const customComponents: Partial<Components> = {
+  h3: ({ children }) => (
+    <h3 className="my-4 text-lg font-semibold text-foreground leading-snug">
+      {children}
+    </h3>
+  ),
+  a: ({ children, ...props }) => (
+    <a
+      {...props}
+      className="my-4 text-blue-500 hover:text-blue-400 underline underline-offset-2 transition-colors"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      {children}
+    </a>
+  ),
+  blockquote: ({ children }) => (
+    <blockquote className="my-4 border-l-2 border-neutral-600 pl-4 text-neutral-300">
+      {children}
+    </blockquote>
+  ),
+  li: ({ children }) => (
+    <li className="my-1 flex items-start leading-relaxed">
+      <span className="mt-2 mr-2 inline-block h-1.5 w-1.5 rounded-full bg-neutral-500" />
+      <span>{children}</span>
+    </li>
+  ),
+};
 
 interface MessagesProps {
   chatId: string
@@ -32,7 +63,10 @@ export function Messages({ chatId }: MessagesProps) {
             <MessageContent variant="flat">
               {message.role === 'user' 
               ? (message.maskedContent && isMasked ? message.maskedContent : message.content) || message.maskedContent
-              : <Response>{message.content}</Response>}
+              : <div className={cn("bg-transparent text-foreground prose rounded-lg p-2")}>
+                  <Markdown className="leading-relaxed space-y-4 px-4" components={customComponents}>{message.content}</Markdown>
+                </div>
+              }
             </MessageContent>
           </Message>
         ))}
