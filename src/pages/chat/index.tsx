@@ -29,7 +29,7 @@ export default function ChatPage() {
       <Flex align="center" justify="between" gap="2">
         {isMobile && <SidebarTrigger />}
         <p>Chat ID: {chatId}</p>
-        <Button variant="ghost" onClick={() => toggleMasked()}>{isMasked ? <Eye /> : <EyeOff/>}</Button>
+        <Button variant="ghost" onClick={() => toggleMasked()}>{!isMasked ? <Eye /> : <EyeOff/>}</Button>
       </Flex>
 
     </div>
