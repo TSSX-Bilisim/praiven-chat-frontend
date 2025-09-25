@@ -44,7 +44,7 @@ function PromptInput({ chatid }: { chatid: string }) {
         <PromptInputContainer
           className="w-full relative z-10 py-4"
         >
-          <Flex gap={'5'} px={'3'} direction={'column'}>
+          <Flex gap={'3'} px={'2'} direction={'column'}>
             <PromptTextArea control={form.control} name="content" />
             <PromptInputActions className="flex w-full items-center justify-between gap-2">
               <div className="flex items-center gap-2">
