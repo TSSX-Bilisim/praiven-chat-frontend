@@ -7,7 +7,7 @@ export function AppSidebarHeader () {
   return (
     <SidebarHeader>
       <SidebarMenu>
-        <SidebarMenuItem className="flex justify-between">
+        <SidebarMenuItem className="flex justify-between py-4">
           { state === "expanded" && (
               <Flex gap="2" direction={"row"} align="center">
                   <div className="flex aspect-square size-8 items-center justify-center rounded-lg p-2">
