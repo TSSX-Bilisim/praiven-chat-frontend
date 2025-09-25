@@ -15,15 +15,12 @@ export default function ChatPage() {
   const chatId = params.chatId!
   const { loadMessages } = useMessages();
   const { isMasked,toggleMasked } = useChatFeatureStore();
-  // Removed unused isMobile variable and destructuring
 
   const isMobile = useIsMobile();
 
   useEffect(() => {
-    console.log("ChatPage useEffect - chatId:", chatId);
     loadMessages(chatId);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [chatId]);
 
   return (
   <div className="flex flex-col h-screen w-full">
