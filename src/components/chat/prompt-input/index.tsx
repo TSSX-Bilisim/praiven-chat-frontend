@@ -38,7 +38,7 @@ function PromptInput({ chatid }: { chatid: string }) {
     return (
     <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-            <Card className="w-full xl:w-2/3 mx-auto p-2 gap-0">
+            <Card className="w-full xl:w-2/3 p-2 gap-0 relative z-10 py-4">
                 <CardContent className="p-2">
                     <PromptTextArea control={form.control} name="content" />
 
