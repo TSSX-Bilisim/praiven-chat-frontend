@@ -14,14 +14,16 @@ const addChats = (chats: Chat[], newChats: Chat[]) => ([
     )
   );
 
-const updateTime = (chats: Chat[], chatId: string) => ([
-    ...chats.map(chat =>
-      (chat.id === chatId 
-        ? { ...chat, updatedAt: new Date().toISOString() } 
-        : chat
-      )
+const updateTime = (chats: Chat[], chatId: string) => (
+  [...chats.map(chat =>
+    (chat.id === chatId
+      ? { ...chat, updatedAt: new Date().toISOString() }
+      : chat
     )
-  ]);
+  )].sort((a, b) =>
+    new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+  )
+);
 
 type chatStore = {
   chats: Chat[];
