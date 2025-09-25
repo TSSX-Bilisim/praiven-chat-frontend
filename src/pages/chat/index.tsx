@@ -1,4 +1,3 @@
-import { Messages } from "@/components/chat/messages";
 import { useParams } from "react-router"
 import { useMessages } from "@/lib/hooks/use-messages";
 import { useEffect } from "react";
@@ -9,6 +8,7 @@ import { Flex } from "@radix-ui/themes";
 import { Button } from "@/components/ui/button";
 import { Eye, EyeOff } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import ChatMessages from "@/components/chat/chat-messages";
 
 export default function ChatPage() {
   const params = useParams()
@@ -36,7 +36,7 @@ export default function ChatPage() {
 
     {/* Ortadaki mesaj alanı */}
     <div className="flex-1 overflow-y-auto p-2">
-      <Messages chatId={chatId} />
+      <ChatMessages chatId={chatId} />
     </div>
 
     {/* Alt input */}
