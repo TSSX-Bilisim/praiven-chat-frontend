@@ -38,7 +38,6 @@ const customComponents: Partial<Components> = {
   ),
 };
 
-  
 
 const ChatMessages = ({ chatId }: { chatId: string }) => {
   const chatContainerRef = useRef<HTMLDivElement>(null)
