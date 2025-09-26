@@ -101,24 +101,33 @@ function NewPromptInput() {
         form.reset();
     }
     return (
-        <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
-                <Card className="w-full xl:w-2/3 mx-auto p-2 gap-0">
-                    <CardContent className="p-2">
-                        <PromptTextArea control={form.control} name="content" />
-                    </CardContent>
-                    <CardFooter className="flex items-center justify-between w-full px-2">
-                        <Flex gap={'2'}>
-                            <ProviderSelect />
-                            <PromptModelSelect control={form.control} name="modelId" />
-                        </Flex>
-                        <Button variant={"ghost"} type="submit" disabled={isLoading}>
-                            {isLoading ? <Loader className="w-4 h-4 animate-spin" /> : <Send/>}
-                        </Button>
-                    </CardFooter>
-                </Card>
-            </form>
-        </Form>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <PromptInputContainer
+            className="w-full relative z-10 py-4"
+          >
+            <Flex gap={'3'} px={'2'} direction={'column'}>
+              <PromptTextArea control={form.control} name="content" />
+              <PromptInputActions className="flex w-full items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <PromptInputAction tooltip="Select Provider">
+                  <ProviderSelect />
+                  </PromptInputAction>
+                  <PromptInputAction tooltip="Select Model">
+                    <PromptModelSelect control={form.control} name="modelId" />
+                  </PromptInputAction>
+                </div>
+                  <PromptInputAction tooltip={isLoading ? "Stop generation" : "Send message"}
+                  >
+                    <Button variant={"ghost"} type="submit" disabled={isLoading}>
+                      {isLoading ? <Loader className="w-4 h-4 animate-spin" /> : <Send/>}
+                    </Button>
+                  </PromptInputAction>
+              </PromptInputActions>
+            </Flex>
+          </PromptInputContainer>
+        </form>
+      </Form>
     )
 }
 
