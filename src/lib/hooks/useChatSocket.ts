@@ -38,9 +38,14 @@ export function useChatSocket() {
       chatStore.updateTime(data.chatId);
     });
 
+    socket.on('chat.title.updated', (data: { chatId: string; title: string }) => {
+      chatStore.updateTitle(data.chatId, data.title);
+    });
+
     return () => {
       socket?.off("llm.stream.chunk");
       socket?.off("llm.stream.completed");
+      socket?.off("chat.title.updated");
     };
   }, [store]);
 }

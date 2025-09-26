@@ -90,6 +90,7 @@ function NewPromptInput() {
             navigate(`/chat/${chat.id}`);
             addChats([chat]);
             sendMessage(chat.id, data.content, data.modelId);
+
             form.reset();
             return;
         } catch (error) {
