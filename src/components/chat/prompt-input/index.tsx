@@ -3,16 +3,13 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { promptschema } from "@/lib/validation/prompt"
-import {
-  Form,
-} from "@/components/ui/form"
+import { Form } from "@/components/ui/form"
 import { useMessages } from "@/lib/hooks/use-messages";
 import { PromptModelSelect } from "@/components/chat/prompt-input/model-select";
 import { ProviderSelect } from "./provider-select";
 import { PromptSendButton } from "./submit-button";
 import { PromptTextArea } from "./text-area";
 import { Flex } from "@radix-ui/themes";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { createChat } from "@/lib/api/chat";
 import { Button } from "@/components/ui/button";
 import { Loader, Send } from "lucide-react";
