@@ -7,11 +7,15 @@ import { Flex } from "@radix-ui/themes";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Messages } from "@/components/chat/messages";
 import MaskToggle from "@/components/chat/mask-toggle";
+import { useChatStore } from "@/lib/stores/chat";
 
 export default function ChatPage() {
   const params = useParams()
   const chatId = params.chatId!
   const { loadMessages } = useMessages();
+  const { chats } = useChatStore();
+  const chat = chats.find(c => c.id === chatId);
+  const chatTitle = chat ? chat.title : "Chat Title";
 
   const isMobile = useIsMobile();
 
@@ -25,7 +29,7 @@ export default function ChatPage() {
     <header className="bg-background z-10 flex h-16 w-full shrink-0 items-center justify-between border-b px-4">
       <Flex gap={'2'} align="center" direction={"row"}>
         {isMobile && <SidebarTrigger />}
-        <div className="text-foreground">Chat Title</div>
+        <div className="text-foreground">{chatTitle}</div>
       </Flex>
       <MaskToggle />
     </header>

@@ -4,31 +4,29 @@ import {
   ConversationEmptyState,
   ConversationScrollButton,
 } from '@/components/ai-elements/conversation';
+import MaskToggle from '@/components/chat/mask-toggle';
 import { NewPromptInput } from '@/components/chat/prompt-input';
-import { Button } from '@/components/ui/button';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { useChatFeatureStore } from '@/lib/stores/chatFeature';
 import { Flex } from '@radix-ui/themes';
-import { Eye, EyeOff, MessageSquare } from 'lucide-react';
+import { MessageSquare } from 'lucide-react';
 
 export default function NewChatPage() {
   const isMobile = useIsMobile();
-  const { isMasked, toggleMasked } = useChatFeatureStore();
   return (
     <div className="flex flex-col h-screen w-full">
       {/* Üst bar */}
-      <div className="flex-shrink-0 p-2 border-b">
-        <Flex align="center" justify="between" gap="2">
+      <header className="bg-background z-10 flex h-16 w-full shrink-0 items-center justify-between border-b px-4">
+        <Flex gap={'2'} align="center" direction={"row"}>
           {isMobile && <SidebarTrigger />}
-          <Button variant="ghost" onClick={() => toggleMasked()}>{!isMasked ? <Eye /> : <EyeOff/>}</Button>
+          <div className="text-foreground">New Chat</div>
         </Flex>
-
-      </div>
+        <MaskToggle />
+      </header>
 
       {/* Ortadaki mesaj alanı */}
-      <div className="flex-1 overflow-y-auto p-2">
-        <Conversation className="relative w-full" style={{ height: '500px' }}>
+      <div className='relative flex-1 overflow-y-auto'>
+        <Conversation className="h-full" style={{ height: '500px' }}>
           <ConversationContent>
               <ConversationEmptyState
                 icon={<MessageSquare className="size-12" />}
@@ -37,12 +35,12 @@ export default function NewChatPage() {
               />
           </ConversationContent>
           <ConversationScrollButton />
-        </Conversation>          
+        </Conversation>
       </div>
 
       {/* Alt input */}
-      <div className="flex-shrink-0 p-2 border-t">
-        <NewPromptInput/>
+      <div className="inset-x-0 bottom-0 mx-auto w-full max-w-3xl shrink-0 px-3 pb-3 md:px-5 md:pb-5">
+          <NewPromptInput/>
       </div>
     </div>
   )
