@@ -22,7 +22,7 @@ export function PromptTextArea<T extends FieldValues>({
       render={({ field }) => (
         <FormItem>
           <FormControl>
-            <PromptInputTextarea className="min-h-[44px]" placeholder={placeholder}  {...field} />
+            <PromptInputTextarea className="min-h-[44px] max-h-[240px] overflow-y-auto resize-y" placeholder={placeholder}  {...field} />
           </FormControl>
         </FormItem>
       )}
