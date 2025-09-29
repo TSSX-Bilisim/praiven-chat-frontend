@@ -66,10 +66,10 @@ export function Messages({ chatId }: MessagesProps) {
               key={message.id}
               className={cn(
                 "mx-auto flex w-full max-w-3xl flex-col gap-2 px-6",
-                isAssistant ? "items-start" : "items-end"
+                !isAssistant ? "items-start" : "items-end"
               )}
             >
-              {isAssistant 
+              {!isAssistant
                 ? (
                   <div className="group flex flex-col items-end gap-1">
                     <MessageContent className="bg-muted text-primary max-w-[85%] rounded-3xl px-5 py-2.5 sm:max-w-[75%]">
