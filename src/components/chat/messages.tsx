@@ -81,8 +81,8 @@ export function Messages({ chatId }: MessagesProps) {
                   </div>
                   )
                 : (
-                  <div className="group flex flex-col items-end gap-1">
-                    <MessageContent className="bg-muted text-primary w-fit max-w-[85%] rounded-3xl px-5 py-2.5 sm:max-w-[75%]">
+                  <div className="group flex flex-col items-end gap-1 w-full">
+                    <MessageContent className="bg-muted text-primary max-w-[85%] rounded-3xl px-5 py-2.5 sm:max-w-[75%]">
                       {message.maskedContent && isMasked ? message.maskedContent : message.content}
                     </MessageContent>
                   </div>
@@ -96,7 +96,7 @@ export function Messages({ chatId }: MessagesProps) {
           <Message
             className="mx-auto flex w-full max-w-3xl flex-col gap-2 px-6 items-end"
           >
-            <div className="group flex flex-col items-end gap-1">
+            <div className="group flex flex-col w-full items-end gap-1">
               {
                 currentUserDraft.maskedContent 
                 ?  (
