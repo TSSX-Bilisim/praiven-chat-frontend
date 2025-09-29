@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import { Markdown } from "../ui/markdown";
 import type { Components } from "react-markdown";
 import { Skeleton } from "../ui/skeleton";
-import { Message, MessageContent } from "../ui/message";
+import { Message, MessageAction, MessageActions, MessageContent } from "../ui/message";
 import { CodeBlock, CodeBlockCode, CodeBlockGroup } from "../ui/code-block";
 import { Button } from "../ui/button";
 import { Copy } from "lucide-react";
@@ -128,16 +128,41 @@ export function Messages({ chatId }: MessagesProps) {
                     >
                       {message.content}
                     </Markdown>
+                    <MessageActions className="self-end">
+                      <MessageAction tooltip="Copy to clipboard">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 rounded-full"
+                          onClick={() => navigator.clipboard.writeText(message.content)}
+                        >
+                          <Copy className={`size-4`} />
+                        </Button>
+                      </MessageAction>
+                    </MessageActions>
                   </div>
                   )
                 : (
-                  <div className="group flex flex-col items-end gap-1 w-full">
+                  <div className="group flex flex-col items-end gap-2 w-full">
                     <MessageContent className="bg-muted text-primary max-w-[85%] rounded-3xl px-5 py-2.5 sm:max-w-[75%]">
                       {message.maskedContent && isMasked ? message.maskedContent : message.content}
                     </MessageContent>
+                    <MessageActions className="self-end">
+                      <MessageAction tooltip="Copy to clipboard">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 rounded-full"
+                          onClick={() => navigator.clipboard.writeText(message.maskedContent || "")}
+                        >
+                          <Copy className={`size-4`} /> 
+                        </Button>
+                      </MessageAction>
+                    </MessageActions>
                   </div>
                 )
               }
+
             </Message>            
           )
         })}
@@ -166,6 +191,20 @@ export function Messages({ chatId }: MessagesProps) {
                         </div>
                     }
                   </div>
+                  {currentUserDraft.status === "masked" && (
+                    <MessageActions className="self-start">
+                      <MessageAction tooltip="Copy to clipboard">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 rounded-full"
+                          onClick={() => navigator.clipboard.writeText(currentUserDraft.maskedContent || "")}
+                        >
+                          <Copy className={`size-4`} />
+                        </Button>
+                      </MessageAction>
+                    </MessageActions>
+                  )}
                 </Message>
               )}
               {currentAiDraft && (
@@ -181,6 +220,20 @@ export function Messages({ chatId }: MessagesProps) {
                       : <Loader variant="typing" />
                     }
                   </div>
+                  {currentAiDraft.status === "completed" && (
+                    <MessageActions className="self-start">
+                      <MessageAction tooltip="Copy to clipboard">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 rounded-full"
+                          onClick={() => navigator.clipboard.writeText(currentAiDraft.content)}
+                        >
+                          <Copy className={`size-4`} />
+                        </Button>
+                      </MessageAction>
+                    </MessageActions>
+                  )}
                 </Message>
               )}
           </div>
