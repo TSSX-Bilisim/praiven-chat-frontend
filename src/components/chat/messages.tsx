@@ -101,6 +101,7 @@ export function Messages({ chatId }: MessagesProps) {
           <div
             ref={currentBlockRef}
             className="min-h-[70vh] space-y-6"
+            style={{ scrollMarginTop: "64px" }}
           >
               {(currentUserDraft) &&(
                 <Message
