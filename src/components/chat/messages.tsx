@@ -97,7 +97,7 @@ export function Messages({ chatId }: MessagesProps) {
   return (
     <div ref={chatContainerRef} className="relative flex-1 overflow-y-auto">
       <ChatContainerRoot className="h-full">
-        <ChatContainerContent className="space-y-6 px-5 py-12">
+        <ChatContainerContent className="space-y-10 px-5 py-12">
         {currentMessages?.map((message) => {
           const isAssistant = message.role !== "user";
           return (
@@ -105,7 +105,7 @@ export function Messages({ chatId }: MessagesProps) {
               key={message.id}
               className={cn(
                 "mx-auto flex w-full max-w-5xl flex-col gap-2 px-10",
-                isAssistant ? "items-start" : "items-end pt-8"
+                isAssistant ? "items-start" : "items-end pt-16"
               )}
             >
               {isAssistant
