@@ -1,6 +1,8 @@
 import { useMessages } from "@/lib/hooks/use-messages"
 import { Loader } from "../ui/loader";
 import { useEffect, useRef } from "react";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useChatFeatureStore } from "@/lib/stores/chatFeature";
 import { ChatContainerContent, ChatContainerRoot } from "../ui/chat-container";
 import { ScrollButton } from "../ui/scroll-button";
@@ -11,6 +13,22 @@ import { Skeleton } from "../ui/skeleton";
 import { Message, MessageContent } from "../ui/message";
 
 const customComponents: Partial<Components> = {
+  code({ node, className, children, ...props }) {
+    const match = /language-(\w+)/.exec(className || "");
+    return match ? (
+      <SyntaxHighlighter
+        style={oneDark}
+        language={match[1]}
+        PreTag="div"
+      >
+        {String(children).replace(/\n$/, "")}
+      </SyntaxHighlighter>
+    ) : (
+      <code className={className} {...props}>
+        {children}
+      </code>
+    );
+  },
   h3: ({ children }) => (
     <h3 className="my-4 text-lg font-semibold text-foreground leading-snug">
       {children}
