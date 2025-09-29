@@ -231,7 +231,7 @@ export function Messages({ chatId }: MessagesProps) {
               {/* User draft */}
               {currentUserDraft && (
                 <Message className="mx-auto flex w-full max-w-5xl flex-col gap-2 px-10 pt-8 items-end">
-                  <div className="group flex flex-col w-full items-end gap-1">
+                  <div className="group flex flex-col w-full items-end gap-2">
                     {currentUserDraft.maskedContent ? (
                       <MessageContent className="bg-muted text-primary max-w-[85%] rounded-3xl px-5 py-2.5 sm:max-w-[75%]">
                         {isMasked ? currentUserDraft.maskedContent : currentUserDraft.content}
@@ -286,7 +286,7 @@ export function Messages({ chatId }: MessagesProps) {
               {/* AI draft */}
               {currentAiDraft && (
                 <Message className="mx-auto flex w-full max-w-5xl flex-col gap-2 px-10 items-start">
-                  <div className="group flex w-full flex-col gap-0">
+                  <div className="group flex w-full flex-col gap-2">
                     {currentAiDraft.content ? (
                       <Markdown
                         components={customComponents}
