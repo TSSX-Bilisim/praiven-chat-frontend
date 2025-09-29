@@ -43,9 +43,32 @@ export const useMessageStore = create<messageStore>(
                 [chatId]: message
             }
         })),
-        addUserDraft: (chatId: string, message: Message) => set((state) => ({
-            userDraft: {...state.userDraft, [chatId]: message}
-        })),
+        addUserDraft: (chatId: string, message: Message) => 
+            set((state) => {
+                const finalizedMessages = [];
+                if (state.userDraft[chatId]) {
+                    finalizedMessages.push(state.userDraft[chatId]!);
+                }
+                if (state.aiDraft[chatId]) {
+                    finalizedMessages.push(state.aiDraft[chatId]!);
+                }
+
+                return {
+                    messages: {
+                        ...state.messages,
+                        [chatId]: [...(state.messages[chatId] ?? []), ...finalizedMessages],
+                    },
+                    userDraft: {
+                        ...state.userDraft,
+                        [chatId]: message,
+                    },
+                    aiDraft: {
+                        ...state.aiDraft,
+                        [chatId]: null,
+                    },
+                };
+            }
+            ),
         addAIDraft: (chatId: string, message: Message) => set((state) => ({
             aiDraft: {...state.aiDraft, [chatId]: message}
         })),
@@ -74,26 +97,35 @@ export const useMessageStore = create<messageStore>(
             set((state) => {
                 const draft = state.userDraft[chatId];
                 if (!draft) return state;
+
+                const updatedDraft: Message = {
+                    ...draft,
+                    status: "masked",
+                };
+
                 return {
-                    messages: {
-                        ...state.messages,
-                        [chatId]: [...(state.messages[chatId] || []), draft],
-                    },
                     userDraft: {
                         ...state.userDraft,
-                        [chatId]: null, // draft'ı temizle
-                    },
-                }
+                        [chatId]: updatedDraft,
+                    }
+                };
             }),
         finalizeAIMessage: (chatId: string) =>
-            set((state) => ({
-                messages: {
-                    ...state.messages,
-                    [chatId]: state.aiDraft[chatId] ? 
-                    [...(state.messages[chatId] || []), state.aiDraft[chatId]!]
-                    : (state.messages[chatId] || [])
-                },
-                aiDraft: {...state.aiDraft, [chatId]: null}
-            }))
+            set((state) => {
+                const draft = state.aiDraft[chatId];
+                if (!draft) return state;
+
+                const updatedDraft: Message = {
+                    ...draft,
+                    status: "completed",
+                };
+
+                return {
+                    aiDraft: {
+                        ...state.aiDraft,
+                        [chatId]: updatedDraft,
+                    },
+                };
+            }),
     })
 )
