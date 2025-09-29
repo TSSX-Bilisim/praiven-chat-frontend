@@ -68,17 +68,20 @@ export function Messages({ chatId }: MessagesProps) {
                 message.role === "user" ? "justify-end" : "justify-start"
               }
             >
-              <div className="max-w-[85%] flex-1 sm:max-w-[75%]">
-                {isAssistant ? (
-                  <div className={cn("bg-transparent text-foreground prose rounded-lg p-2")}>
-                    <Markdown className="leading-relaxed space-y-4 px-4" components={customComponents}>{message.content}</Markdown>
-                  </div>
-                ) : (
-                  <MessageContent className="bg-neutral-800 text-foreground leading-relaxed px-4">
-                    {message.content}
+              {isAssistant 
+                ? (
+                  <MessageContent className="bg-neutral-800 text-foreground roundedn-lg p-2">
+                    {message.maskedContent && isMasked ? message.maskedContent : message.content}
                   </MessageContent>
-                )}
-              </div>
+                  )
+                : (
+                  <div className="bg-secondary text-foreground prose rounded-lg p-2">
+                    <Markdown components={customComponents}>
+                      {message.content}
+                    </Markdown>
+                  </div>
+                )
+              }
             </Message>            
           )
         })}
