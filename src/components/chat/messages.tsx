@@ -100,7 +100,7 @@ export function Messages({ chatId }: MessagesProps) {
         { (currentAiDraft || currentUserDraft) && (
           <div
             ref={currentBlockRef}
-            className="min-h-[60vh] space-y-6"
+            className="min-h-[70vh] space-y-6"
           >
               {(currentUserDraft) &&(
                 <Message
