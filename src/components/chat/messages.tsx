@@ -13,20 +13,28 @@ import { Skeleton } from "../ui/skeleton";
 import { Message, MessageContent } from "../ui/message";
 
 const customComponents: Partial<Components> = {
-  code({ node, className, children, ...props }) {
+  code({ className, children}) {
     const match = /language-(\w+)/.exec(className || "");
-    return match ? (
-      <SyntaxHighlighter
-        style={oneDark}
-        language={match[1]}
-        PreTag="div"
-      >
-        {String(children).replace(/\n$/, "")}
-      </SyntaxHighlighter>
-    ) : (
-      <code className={className} {...props}>
-        {children}
-      </code>
+    const language = match ? match[1] : '';
+    return (
+      <div style={{ position: 'relative' }}>
+        <div style={{ position: 'absolute', left: 0, top: 0, padding: '5px', backgroundColor: '#333', color: '#fff', borderRadius: '4px 0 0 0' }}>
+          {language}
+        </div>
+        <button 
+          style={{ position: 'absolute', right: 0, top: 0, padding: '5px', backgroundColor: '#007bff', color: '#fff', border: 'none', borderRadius: '0 4px 0 0' }}
+          onClick={() => navigator.clipboard.writeText(String(children).replace(/\n$/, ""))}
+        >
+          Kodu Kopyala
+        </button>
+        <SyntaxHighlighter
+          style={oneDark}
+          language={language}
+          PreTag="div"
+        >
+          {String(children).replace(/\n$/, "")}
+        </SyntaxHighlighter>
+      </div>
     );
   },
   h3: ({ children }) => (
