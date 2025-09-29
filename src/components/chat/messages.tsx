@@ -20,7 +20,8 @@ const customComponents: Partial<Components> = {
     const match = /language-(\w+)/.exec(className || "");
     const language = match ? match[1] : '';
     const { theme } = useTheme(); // light / dark
-    const [currentTheme, setCurrentTheme] = useState<"github-dark" | "github-light">("github-dark");
+    const defaultTheme = theme === "dark" ? "github-dark" : "github-light";
+    const [currentTheme, setCurrentTheme] = useState<"github-dark" | "github-light">(defaultTheme);
 
     useEffect(() => {
       if (theme === "dark") setCurrentTheme("github-dark");
