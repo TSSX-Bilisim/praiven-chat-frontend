@@ -1,8 +1,6 @@
 import { useMessages } from "@/lib/hooks/use-messages"
 import { Loader } from "../ui/loader";
 import { useEffect, useRef } from "react";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useChatFeatureStore } from "@/lib/stores/chatFeature";
 import { ChatContainerContent, ChatContainerRoot } from "../ui/chat-container";
 import { ScrollButton } from "../ui/scroll-button";
@@ -11,30 +9,41 @@ import { Markdown } from "../ui/markdown";
 import type { Components } from "react-markdown";
 import { Skeleton } from "../ui/skeleton";
 import { Message, MessageContent } from "../ui/message";
+import { CodeBlock, CodeBlockCode, CodeBlockGroup } from "../ui/code-block";
+import { Button } from "../ui/button";
+import { Copy } from "lucide-react";
 
 const customComponents: Partial<Components> = {
   code({ className, children}) {
     const match = /language-(\w+)/.exec(className || "");
     const language = match ? match[1] : '';
     return (
-      <div style={{ position: 'relative' }}>
-        <div style={{ position: 'absolute', left: 0, top: 0, padding: '5px', backgroundColor: '#333', color: '#fff', borderRadius: '4px 0 0 0' }}>
-          {language}
+        <div className="w-full max-w-5xl">
+          <CodeBlock>
+            <CodeBlockGroup className="border-border border-b py-2 pr-2 pl-4">
+              <div className="flex items-center gap-2">
+                <div className="bg-primary/10 text-primary rounded px-2 py-1 text-xs font-medium">
+                  {language}
+                </div>
+                <span className="text-muted-foreground text-sm">counter.tsx</span>
+              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
+                onClick={() => navigator.clipboard.writeText(String(children).replace(/\n$/, ""))}
+              >
+                <Copy className="h-4 w-4" />
+              </Button>
+            </CodeBlockGroup>
+            <CodeBlockCode 
+              code={String(children).replace(/\n$/, "")}
+              language={language}
+              theme="github-dark"
+              className="dark:[&_pre]:!bg-background"
+            />
+          </CodeBlock>
         </div>
-        <button 
-          style={{ position: 'absolute', right: 0, top: 0, padding: '5px', backgroundColor: '#007bff', color: '#fff', border: 'none', borderRadius: '0 4px 0 0' }}
-          onClick={() => navigator.clipboard.writeText(String(children).replace(/\n$/, ""))}
-        >
-          Kodu Kopyala
-        </button>
-        <SyntaxHighlighter
-          style={oneDark}
-          language={language}
-          PreTag="div"
-        >
-          {String(children).replace(/\n$/, "")}
-        </SyntaxHighlighter>
-      </div>
     );
   },
   h3: ({ children }) => (
