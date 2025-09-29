@@ -1,6 +1,6 @@
 import { useMessages } from "@/lib/hooks/use-messages"
 import { Loader } from "../ui/loader";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { useChatFeatureStore } from "@/lib/stores/chatFeature";
 import { ChatContainerContent, ChatContainerRoot } from "../ui/chat-container";
 import { ScrollButton } from "../ui/scroll-button";
@@ -12,11 +12,21 @@ import { Message, MessageContent } from "../ui/message";
 import { CodeBlock, CodeBlockCode, CodeBlockGroup } from "../ui/code-block";
 import { Button } from "../ui/button";
 import { Copy } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useTheme } from "next-themes";
 
 const customComponents: Partial<Components> = {
   code({ className, children}) {
     const match = /language-(\w+)/.exec(className || "");
     const language = match ? match[1] : '';
+    const { theme } = useTheme(); // light / dark
+    const [currentTheme, setCurrentTheme] = useState<"github-dark" | "github-light">("github-dark");
+
+    useEffect(() => {
+      if (theme === "dark") setCurrentTheme("github-dark");
+      else setCurrentTheme("github-light");
+    }, [theme]);
+
     return (
         <div className="w-full max-w-5xl py-4">
           <CodeBlock>
@@ -38,7 +48,7 @@ const customComponents: Partial<Components> = {
             <CodeBlockCode 
               code={String(children).replace(/\n$/, "")}
               language={language}
-              theme="github-dark"
+              theme={currentTheme}
               className="dark:[&_pre]:!bg-background"
             />
           </CodeBlock>
