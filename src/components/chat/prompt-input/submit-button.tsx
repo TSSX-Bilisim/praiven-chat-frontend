@@ -1,20 +1,18 @@
-import { Button } from "@/components/ui/button"
-import { ArrowUp, Square } from "lucide-react"
-import { useMessageStore } from "@/lib/stores/message"
+import { Button } from "@/components/ui/button";
+import { ArrowUp, Square } from "lucide-react";
 
 interface PromptSendButtonProps {
-  chatId: string
+  isLoading: boolean;
 }
 
-export function PromptSendButton({ chatId }: PromptSendButtonProps) {
-  const { userDraft, aiDraft } = useMessageStore((state) => state)
-  const isLoading = !!userDraft[chatId]  || !!aiDraft[chatId]
-
+export function PromptSendButton({ isLoading }: PromptSendButtonProps) {
   return (
-    <Button variant={"ghost"} type="submit" disabled={isLoading}>
-      {isLoading 
-        ? (<Square className="size-5 fill-current" />) 
-        : (<ArrowUp className="size-5" />)}
+    <Button variant="ghost" type="submit" disabled={isLoading}>
+      {isLoading ? (
+        <Square className="size-5 fill-current" />
+      ) : (
+        <ArrowUp className="size-5" />
+      )}
     </Button>
-  )
+  );
 }
