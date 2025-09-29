@@ -34,6 +34,9 @@ function PromptInput({ chatid }: { chatid: string }) {
     const isLoading = 
       (currentAiDraft?.status !== 'completed') || 
       (currentUserDraft?.status !== 'masked');
+    console.log(currentAiDraft?.status !== 'completed');
+    console.log(currentUserDraft?.status !== 'masked');
+    console.log(isLoading);
 
     function onSubmit(data: z.infer<typeof promptschema>) {
         sendMessage(chatid, data.content, data.modelId);
