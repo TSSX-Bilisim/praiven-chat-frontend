@@ -11,7 +11,7 @@ import { Skeleton } from "../ui/skeleton";
 import { Message, MessageAction, MessageActions, MessageContent } from "../ui/message";
 import { CodeBlock, CodeBlockCode, CodeBlockGroup } from "../ui/code-block";
 import { Button } from "../ui/button";
-import { Copy } from "lucide-react";
+import { Copy, Edit3, Flag, RotateCcw, ThumbsDown, ThumbsUp } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 
@@ -128,7 +128,7 @@ export function Messages({ chatId }: MessagesProps) {
                     >
                       {message.content}
                     </Markdown>
-                    <MessageActions className="self-start">
+                    <MessageActions className="self-start -ml-2.5 flex gap-0 opacity-0 transition-opacity duration-150 group-hover:opacity-100">
                       <MessageAction tooltip="Copy to clipboard" side="left">
                         <Button
                           variant="ghost"
@@ -139,6 +139,42 @@ export function Messages({ chatId }: MessagesProps) {
                           <Copy className={`size-4`} />
                         </Button>
                       </MessageAction>
+                      <MessageAction tooltip="Retry">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 rounded-full"
+                          onClick={() => console.log("Retry clicked")}
+                        >
+                          <RotateCcw className="size-4" />
+                        </Button>
+                      </MessageAction>
+                      <MessageAction tooltip="Helpful">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 rounded-full data-[active=true]:bg-green-100 data-[active=true]:text-green-500"
+                          onClick={(e) => {
+                            const btn = e.currentTarget
+                            btn.dataset.active = btn.dataset.active === "true" ? "false" : "true"
+                          }}
+                        >
+                          <ThumbsUp className="size-4" />
+                        </Button>
+                      </MessageAction>
+                      <MessageAction tooltip="Not helpful">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 rounded-full data-[active=true]:bg-red-100 data-[active=true]:text-red-500"
+                          onClick={(e) => {
+                            const btn = e.currentTarget
+                            btn.dataset.active = btn.dataset.active === "true" ? "false" : "true"
+                          }}
+                        >
+                          <ThumbsDown className="size-4" />
+                        </Button>
+                      </MessageAction>
                     </MessageActions>
                   </div>
                   )
@@ -147,7 +183,7 @@ export function Messages({ chatId }: MessagesProps) {
                     <MessageContent className="bg-muted text-primary max-w-[85%] rounded-3xl px-5 py-2.5 sm:max-w-[75%]">
                       {message.maskedContent && isMasked ? message.maskedContent : message.content}
                     </MessageContent>
-                    <MessageActions className="self-end">
+                    <MessageActions className="self-end -ml-2.5 flex gap-0 opacity-0 transition-opacity duration-150 group-hover:opacity-100">
                       <MessageAction tooltip="Copy to clipboard">
                         <Button
                           variant="ghost"
@@ -158,7 +194,27 @@ export function Messages({ chatId }: MessagesProps) {
                           <Copy className={`size-4`} /> 
                         </Button>
                       </MessageAction>
+                      <MessageAction tooltip="Edit">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 rounded-full"
+                          onClick={() => console.log("Edit clicked")}
+                        >
+                          <Edit3 className="size-4" />
+                        </Button>
+                      </MessageAction>
                     </MessageActions>
+                    <MessageAction tooltip="Report">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 rounded-full"
+                        onClick={() => console.log("Report clicked")}
+                      >
+                        <Flag className="size-4" />
+                      </Button>
+                    </MessageAction>
                   </div>
                 )
               }
@@ -192,7 +248,7 @@ export function Messages({ chatId }: MessagesProps) {
                     }
                   </div>
                   {currentUserDraft.status === "masked" && (
-                    <MessageActions className="self-end">
+                    <MessageActions className="self-end -ml-2.5 flex gap-0 opacity-0 transition-opacity duration-150 group-hover:opacity-100">
                       <MessageAction tooltip="Copy to clipboard">
                         <Button
                           variant="ghost"
@@ -201,6 +257,26 @@ export function Messages({ chatId }: MessagesProps) {
                           onClick={() => navigator.clipboard.writeText(currentUserDraft.maskedContent || "")}
                         >
                           <Copy className={`size-4`} />
+                        </Button>
+                      </MessageAction>
+                      <MessageAction tooltip="Edit">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 rounded-full"
+                          onClick={() => console.log("Edit clicked")}
+                        >
+                          <Edit3 className="size-4" />
+                        </Button>
+                      </MessageAction>
+                      <MessageAction tooltip="Report">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 rounded-full"
+                          onClick={() => console.log("Report clicked")}
+                        >
+                          <Flag className="size-4" />
                         </Button>
                       </MessageAction>
                     </MessageActions>
@@ -221,7 +297,7 @@ export function Messages({ chatId }: MessagesProps) {
                     }
                   </div>
                   {currentAiDraft.status === "completed" && (
-                    <MessageActions className="self-start">
+                    <MessageActions className="self-start -ml-2.5 flex gap-0 opacity-0 transition-opacity duration-150 group-hover:opacity-100">
                       <MessageAction tooltip="Copy to clipboard">
                         <Button
                           variant="ghost"
@@ -230,6 +306,42 @@ export function Messages({ chatId }: MessagesProps) {
                           onClick={() => navigator.clipboard.writeText(currentAiDraft.content)}
                         >
                           <Copy className={`size-4`} />
+                        </Button>
+                      </MessageAction>
+                      <MessageAction tooltip="Retry">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 rounded-full"
+                          onClick={() => console.log("Retry clicked")}
+                        >
+                          <RotateCcw className="size-4" />
+                        </Button>
+                      </MessageAction>
+                      <MessageAction tooltip="Helpful">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 rounded-full data-[active=true]:bg-green-100 data-[active=true]:text-green-500"
+                          onClick={(e) => {
+                            const btn = e.currentTarget
+                            btn.dataset.active = btn.dataset.active === "true" ? "false" : "true"
+                          }}
+                        >
+                          <ThumbsUp className="size-4" />
+                        </Button>
+                      </MessageAction>
+                      <MessageAction tooltip="Not helpful">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 rounded-full data-[active=true]:bg-red-100 data-[active=true]:text-red-500"
+                          onClick={(e) => {
+                            const btn = e.currentTarget
+                            btn.dataset.active = btn.dataset.active === "true" ? "false" : "true"
+                          }}
+                        >
+                          <ThumbsDown className="size-4" />
                         </Button>
                       </MessageAction>
                     </MessageActions>
