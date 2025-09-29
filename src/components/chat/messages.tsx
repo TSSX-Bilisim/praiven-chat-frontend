@@ -129,7 +129,7 @@ export function Messages({ chatId }: MessagesProps) {
                       {message.content}
                     </Markdown>
                     <MessageActions className="self-end">
-                      <MessageAction tooltip="Copy to clipboard">
+                      <MessageAction tooltip="Copy to clipboard" side="left">
                         <Button
                           variant="ghost"
                           size="icon"
@@ -193,7 +193,7 @@ export function Messages({ chatId }: MessagesProps) {
                   </div>
                   {currentUserDraft.status === "masked" && (
                     <MessageActions className="self-start">
-                      <MessageAction tooltip="Copy to clipboard">
+                      <MessageAction tooltip="Copy to clipboard" side="left">
                         <Button
                           variant="ghost"
                           size="icon"
@@ -221,7 +221,7 @@ export function Messages({ chatId }: MessagesProps) {
                     }
                   </div>
                   {currentAiDraft.status === "completed" && (
-                    <MessageActions className="self-start">
+                    <MessageActions className="self-end">
                       <MessageAction tooltip="Copy to clipboard">
                         <Button
                           variant="ghost"
