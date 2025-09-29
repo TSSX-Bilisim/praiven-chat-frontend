@@ -60,7 +60,7 @@ export function Messages({ chatId }: MessagesProps) {
       <ChatContainerRoot className="h-full">
         <ChatContainerContent className="space-y-6 px-5 py-12">
         {currentMessages?.map((message) => {
-          const isAssistant = message.role === "assistant";
+          const isAssistant = message.role !== "user";
           return (
             <Message
               key={message.id}
