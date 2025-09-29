@@ -327,24 +327,17 @@ export function Messages({ chatId }: MessagesProps) {
                           variant="ghost"
                           size="icon"
                           className="h-8 w-8 rounded-full data-[active=true]:bg-accent data-[active=true]:text-accent-foreground"
-                          onClick={(e) => {
-                            const btn = e.currentTarget
-                            btn.dataset.active = btn.dataset.active === "true" ? "false" : "true"
-                          }}
                         >
                           <ThumbsUp className="size-4" />
                         </Button>
                       </MessageAction>
-                      {/* Dislike */}
+
+                      {/* Not helpful */}
                       <MessageAction tooltip="Not helpful">
                         <Button
                           variant="ghost"
                           size="icon"
                           className="h-8 w-8 rounded-full data-[active=true]:bg-destructive data-[active=true]:text-destructive-foreground"
-                          onClick={(e) => {
-                            const btn = e.currentTarget
-                            btn.dataset.active = btn.dataset.active === "true" ? "false" : "true"
-                          }}
                         >
                           <ThumbsDown className="size-4" />
                         </Button>
