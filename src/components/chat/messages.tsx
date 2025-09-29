@@ -16,7 +16,7 @@ import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 
 const customComponents: Partial<Components> = {
-  code({ className, children}) {
+  code({ className, children }) {
     const match = /language-(\w+)/.exec(className || "");
     const language = match ? match[1] : '';
     const { theme } = useTheme(); // light / dark
@@ -29,31 +29,31 @@ const customComponents: Partial<Components> = {
     }, [theme]);
 
     return (
-        <div className="w-full max-w-5xl py-4">
-          <CodeBlock>
-            <CodeBlockGroup className="border-border border-b py-2 pr-2 pl-4">
-              <div className="flex items-center gap-2">
-                <div className="bg-primary/10 text-primary rounded px-2 py-1 text-xs font-medium">
-                  {language}
-                </div>
+      <div className="w-full max-w-5xl py-4">
+        <CodeBlock>
+          <CodeBlockGroup className="border-border border-b py-2 pr-2 pl-4 flex justify-between items-center">
+            <div className="flex items-center gap-2">
+              <div className="bg-primary/10 text-primary rounded px-2 py-1 text-xs font-medium">
+                {language}
               </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8"
-                onClick={() => navigator.clipboard.writeText(String(children).replace(/\n$/, ""))}
-              >
-                <Copy className="h-4 w-4" />
-              </Button>
-            </CodeBlockGroup>
-            <CodeBlockCode 
-              code={String(children).replace(/\n$/, "")}
-              language={language}
-              theme={currentTheme}
-              className="dark:[&_pre]:!bg-background"
-            />
-          </CodeBlock>
-        </div>
+            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8"
+              onClick={() => navigator.clipboard.writeText(String(children).replace(/\n$/, ""))}
+            >
+              <Copy className="h-4 w-4" />
+            </Button>
+          </CodeBlockGroup>
+          <CodeBlockCode
+            code={String(children).replace(/\n$/, "")}
+            language={language}
+            theme={currentTheme}
+            className="dark:[&_pre]:!bg-background"
+          />
+        </CodeBlock>
+      </div>
     );
   },
   h3: ({ children }) => (
@@ -72,13 +72,13 @@ const customComponents: Partial<Components> = {
     </a>
   ),
   blockquote: ({ children }) => (
-    <blockquote className="my-4 border-l-2 border-neutral-600 pl-4 text-neutral-300">
+    <blockquote className="my-4 border-l-2 border-muted-foreground pl-4 text-muted-foreground">
       {children}
     </blockquote>
   ),
   li: ({ children }) => (
     <li className="my-1 flex items-start leading-relaxed">
-      <span className="mt-2 mr-2 inline-block h-1.5 w-1.5 rounded-full bg-neutral-500" />
+      <span className="mt-2 mr-2 inline-block h-1.5 w-1.5 rounded-full bg-muted-foreground" />
       <span>{children}</span>
     </li>
   ),
@@ -109,26 +109,26 @@ export function Messages({ chatId }: MessagesProps) {
     <div ref={chatContainerRef} className="relative flex-1 overflow-y-auto">
       <ChatContainerRoot className="h-full">
         <ChatContainerContent className="space-y-10 px-5 py-12">
-        {currentMessages?.map((message) => {
-          const isAssistant = message.role !== "user";
-          return (
-            <Message
-              key={message.id}
-              className={cn(
-                "mx-auto flex w-full max-w-5xl flex-col gap-2 px-10",
-                isAssistant ? "items-start" : "items-end pt-16"
-              )}
-            >
-              {isAssistant
-                ? (
+          {currentMessages?.map((message) => {
+            const isAssistant = message.role !== "user";
+            return (
+              <Message
+                key={message.id}
+                className={cn(
+                  "mx-auto flex w-full max-w-5xl flex-col gap-2 px-10",
+                  isAssistant ? "items-start" : "items-end pt-16"
+                )}
+              >
+                {isAssistant ? (
                   <div className="group flex w-full flex-col gap-2">
                     <Markdown
-                      components={customComponents} 
+                      components={customComponents}
                       className="text-foreground prose flex-1 rounded-lg bg-transparent p-0"
                     >
                       {message.content}
                     </Markdown>
                     <MessageActions className="self-start -ml-2.5 flex gap-1 opacity-0 transition-opacity duration-150 group-hover:opacity-100">
+                      {/* Copy */}
                       <MessageAction tooltip="Copy to clipboard" side="left">
                         <Button
                           variant="ghost"
@@ -136,9 +136,10 @@ export function Messages({ chatId }: MessagesProps) {
                           className="h-8 w-8 rounded-full"
                           onClick={() => navigator.clipboard.writeText(message.content)}
                         >
-                          <Copy className={`size-4`} />
+                          <Copy className="size-4" />
                         </Button>
                       </MessageAction>
+                      {/* Retry */}
                       <MessageAction tooltip="Retry">
                         <Button
                           variant="ghost"
@@ -149,11 +150,12 @@ export function Messages({ chatId }: MessagesProps) {
                           <RotateCcw className="size-4" />
                         </Button>
                       </MessageAction>
+                      {/* Like */}
                       <MessageAction tooltip="Helpful">
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-8 w-8 rounded-full data-[active=true]:bg-green-100 data-[active=true]:text-green-500"
+                          className="h-8 w-8 rounded-full data-[active=true]:bg-accent data-[active=true]:text-accent-foreground"
                           onClick={(e) => {
                             const btn = e.currentTarget
                             btn.dataset.active = btn.dataset.active === "true" ? "false" : "true"
@@ -162,11 +164,12 @@ export function Messages({ chatId }: MessagesProps) {
                           <ThumbsUp className="size-4" />
                         </Button>
                       </MessageAction>
+                      {/* Dislike */}
                       <MessageAction tooltip="Not helpful">
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-8 w-8 rounded-full data-[active=true]:bg-red-100 data-[active=true]:text-red-500"
+                          className="h-8 w-8 rounded-full data-[active=true]:bg-destructive data-[active=true]:text-destructive-foreground"
                           onClick={(e) => {
                             const btn = e.currentTarget
                             btn.dataset.active = btn.dataset.active === "true" ? "false" : "true"
@@ -177,13 +180,13 @@ export function Messages({ chatId }: MessagesProps) {
                       </MessageAction>
                     </MessageActions>
                   </div>
-                  )
-                : (
+                ) : (
                   <div className="group flex flex-col items-end gap-2 w-full">
                     <MessageContent className="bg-muted text-primary max-w-[85%] rounded-3xl px-5 py-2.5 sm:max-w-[75%]">
                       {message.maskedContent && isMasked ? message.maskedContent : message.content}
                     </MessageContent>
                     <MessageActions className="self-end -ml-2.5 flex gap-1 opacity-0 transition-opacity duration-150 group-hover:opacity-100">
+                      {/* Copy */}
                       <MessageAction tooltip="Copy to clipboard">
                         <Button
                           variant="ghost"
@@ -191,9 +194,10 @@ export function Messages({ chatId }: MessagesProps) {
                           className="h-8 w-8 rounded-full"
                           onClick={() => navigator.clipboard.writeText(message.maskedContent || "")}
                         >
-                          <Copy className={`size-4`} /> 
+                          <Copy className="size-4" />
                         </Button>
                       </MessageAction>
+                      {/* Edit */}
                       <MessageAction tooltip="Edit">
                         <Button
                           variant="ghost"
@@ -204,6 +208,7 @@ export function Messages({ chatId }: MessagesProps) {
                           <Edit3 className="size-4" />
                         </Button>
                       </MessageAction>
+                      {/* Report */}
                       <MessageAction tooltip="Report">
                         <Button
                           variant="ghost"
@@ -216,39 +221,31 @@ export function Messages({ chatId }: MessagesProps) {
                       </MessageAction>
                     </MessageActions>
                   </div>
-                )
-              }
-
-            </Message>            
-          )
-        })}
-        {/* yeni mesajlar */}
-        { (currentAiDraft || currentUserDraft) && (
-          <div
-            ref={currentBlockRef}
-            className="min-h-[70vh] space-y-6"
-          >
-              {(currentUserDraft) &&(
-                <Message
-                  className="mx-auto flex w-full max-w-5xl flex-col gap-2 px-10 pt-8 items-end"
-                >
+                )}
+              </Message>
+            )
+          })}
+          {/* Yeni mesajlar */}
+          {(currentAiDraft || currentUserDraft) && (
+            <div ref={currentBlockRef} className="min-h-[70vh] space-y-6">
+              {/* User draft */}
+              {currentUserDraft && (
+                <Message className="mx-auto flex w-full max-w-5xl flex-col gap-2 px-10 pt-8 items-end">
                   <div className="group flex flex-col w-full items-end gap-1">
-                    {
-                      currentUserDraft.maskedContent 
-                      ?  (
-                        <MessageContent className="bg-muted text-primary max-w-[85%] rounded-3xl px-5 py-2.5 sm:max-w-[75%]">
-                          {isMasked ? currentUserDraft.maskedContent : currentUserDraft.content}
-                        </MessageContent>
-                      )
-                      : <div className="space-y-2">
-                          {/* Skeleton efekt */}
-                          <Skeleton className="h-2 w-[250px]" />
-                          <Skeleton className="h-2 w-[200px]" />
-                        </div>
-                    }
+                    {currentUserDraft.maskedContent ? (
+                      <MessageContent className="bg-muted text-primary max-w-[85%] rounded-3xl px-5 py-2.5 sm:max-w-[75%]">
+                        {isMasked ? currentUserDraft.maskedContent : currentUserDraft.content}
+                      </MessageContent>
+                    ) : (
+                      <div className="space-y-2">
+                        <Skeleton className="h-2 w-[250px]" />
+                        <Skeleton className="h-2 w-[200px]" />
+                      </div>
+                    )}
                   </div>
                   {currentUserDraft.status === "masked" && (
                     <MessageActions className="self-end -ml-2.5 flex gap-1 opacity-0 transition-opacity duration-150 group-hover:opacity-100">
+                      {/* Copy */}
                       <MessageAction tooltip="Copy to clipboard">
                         <Button
                           variant="ghost"
@@ -256,9 +253,10 @@ export function Messages({ chatId }: MessagesProps) {
                           className="h-8 w-8 rounded-full"
                           onClick={() => navigator.clipboard.writeText(currentUserDraft.maskedContent || "")}
                         >
-                          <Copy className={`size-4`} />
+                          <Copy className="size-4" />
                         </Button>
                       </MessageAction>
+                      {/* Edit */}
                       <MessageAction tooltip="Edit">
                         <Button
                           variant="ghost"
@@ -269,6 +267,7 @@ export function Messages({ chatId }: MessagesProps) {
                           <Edit3 className="size-4" />
                         </Button>
                       </MessageAction>
+                      {/* Report */}
                       <MessageAction tooltip="Report">
                         <Button
                           variant="ghost"
@@ -283,21 +282,24 @@ export function Messages({ chatId }: MessagesProps) {
                   )}
                 </Message>
               )}
+              {/* AI draft */}
               {currentAiDraft && (
                 <Message className="mx-auto flex w-full max-w-5xl flex-col gap-2 px-10 items-start">
                   <div className="group flex w-full flex-col gap-0">
-                    {currentAiDraft.content
-                      ? <Markdown
-                          components={customComponents} 
-                          className="text-foreground prose flex-1 rounded-lg bg-transparent p-0"
-                        >
-                          {currentAiDraft.content}
-                        </Markdown>
-                      : <Loader variant="typing" />
-                    }
+                    {currentAiDraft.content ? (
+                      <Markdown
+                        components={customComponents}
+                        className="text-foreground prose flex-1 rounded-lg bg-transparent p-0"
+                      >
+                        {currentAiDraft.content}
+                      </Markdown>
+                    ) : (
+                      <Loader variant="typing" />
+                    )}
                   </div>
                   {currentAiDraft.status === "completed" && (
                     <MessageActions className="self-start -ml-2.5 flex gap-1 opacity-0 transition-opacity duration-150 group-hover:opacity-100">
+                      {/* Copy */}
                       <MessageAction tooltip="Copy to clipboard">
                         <Button
                           variant="ghost"
@@ -305,9 +307,10 @@ export function Messages({ chatId }: MessagesProps) {
                           className="h-8 w-8 rounded-full"
                           onClick={() => navigator.clipboard.writeText(currentAiDraft.content)}
                         >
-                          <Copy className={`size-4`} />
+                          <Copy className="size-4" />
                         </Button>
                       </MessageAction>
+                      {/* Retry */}
                       <MessageAction tooltip="Retry">
                         <Button
                           variant="ghost"
@@ -318,11 +321,12 @@ export function Messages({ chatId }: MessagesProps) {
                           <RotateCcw className="size-4" />
                         </Button>
                       </MessageAction>
+                      {/* Like */}
                       <MessageAction tooltip="Helpful">
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-8 w-8 rounded-full data-[active=true]:bg-green-100 data-[active=true]:text-green-500"
+                          className="h-8 w-8 rounded-full data-[active=true]:bg-accent data-[active=true]:text-accent-foreground"
                           onClick={(e) => {
                             const btn = e.currentTarget
                             btn.dataset.active = btn.dataset.active === "true" ? "false" : "true"
@@ -331,11 +335,12 @@ export function Messages({ chatId }: MessagesProps) {
                           <ThumbsUp className="size-4" />
                         </Button>
                       </MessageAction>
+                      {/* Dislike */}
                       <MessageAction tooltip="Not helpful">
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-8 w-8 rounded-full data-[active=true]:bg-red-100 data-[active=true]:text-red-500"
+                          className="h-8 w-8 rounded-full data-[active=true]:bg-destructive data-[active=true]:text-destructive-foreground"
                           onClick={(e) => {
                             const btn = e.currentTarget
                             btn.dataset.active = btn.dataset.active === "true" ? "false" : "true"
@@ -348,15 +353,13 @@ export function Messages({ chatId }: MessagesProps) {
                   )}
                 </Message>
               )}
-          </div>
-        )}
-
-
-      </ChatContainerContent>
-      <div className="absolute bottom-4 left-1/2 flex w-full -translate-x-1/2 justify-end px-5">
-        <ScrollButton className="shadow-sm" />
-      </div>
-    </ChatContainerRoot>
-  </div>
+            </div>
+          )}
+        </ChatContainerContent>
+        <div className="absolute bottom-4 left-1/2 flex w-full -translate-x-1/2 justify-end px-5">
+          <ScrollButton className="shadow-sm" />
+        </div>
+      </ChatContainerRoot>
+    </div>
   )
 }
