@@ -24,7 +24,7 @@ export default function ChatPage() {
   }, [chatId]);
 
   return (
-  <main className="flex h-screen flex-col overflow-hidden">
+  <main className="flex w-full h-screen flex-col overflow-hidden">
     {/* Üst bar */}
     <header className="bg-background z-10 flex h-16 w-full shrink-0 items-center justify-between border-b px-4">
       <Flex gap={'2'} align="center" direction={"row"}>

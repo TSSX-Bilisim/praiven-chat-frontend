@@ -1,5 +1,4 @@
 import { useMessages } from "@/lib/hooks/use-messages"
-import { Message, MessageContent } from '@/components/ai-elements/message';
 import { Loader } from "../ui/loader";
 import { useRef } from "react";
 import { useChatFeatureStore } from "@/lib/stores/chatFeature";
@@ -9,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { Markdown } from "../ui/markdown";
 import type { Components } from "react-markdown";
 import { Skeleton } from "../ui/skeleton";
+import { Message, MessageContent } from "../ui/message";
 
 const customComponents: Partial<Components> = {
   h3: ({ children }) => (
@@ -56,39 +56,52 @@ export function Messages({ chatId }: MessagesProps) {
   if (error) return <p>Error: {error.message}</p>
 
   return (
-    <div ref={chatContainerRef} className="relative flex-1 overflow-y-auto">
+    <div ref={chatContainerRef} className="relative w-full overflow-y-auto">
       <ChatContainerRoot className="h-full">
         <ChatContainerContent className="space-y-6 px-5 py-12">
-        {currentMessages?.map((message) => (
-          <Message from={message.role} key={message.id}>
-            <MessageContent variant="flat">
-              {message.role === 'user' 
-              ? (message.maskedContent && isMasked ? message.maskedContent : message.content) || message.maskedContent
-              : <div className={cn("bg-transparent text-foreground prose rounded-lg p-2")}>
-                  <Markdown className="leading-relaxed space-y-4 px-4" components={customComponents}>{message.content}</Markdown>
-                </div>
+        {currentMessages?.map((message) => {
+          const isAssistant = message.role === "assistant";
+          return (
+            <Message
+              key={message.id}
+              className={
+                message.role === "user" ? "justify-end" : "justify-start"
               }
-            </MessageContent>
-          </Message>
-        ))}
+            >
+              <div className="max-w-[85%] flex-1 sm:max-w-[75%]">
+                {isAssistant ? (
+                  <div className={cn("bg-transparent text-foreground prose rounded-lg p-2")}>
+                    <Markdown className="leading-relaxed space-y-4 px-4" components={customComponents}>{message.content}</Markdown>
+                  </div>
+                ) : (
+                  <MessageContent className="bg-neutral-800 text-foreground leading-relaxed px-4">
+                    {message.content}
+                  </MessageContent>
+                )}
+              </div>
+            </Message>            
+          )
+        })}
         {/* yeni mesajlar */}
         {(currentUserDraft) &&(
-          <Message from="user" key={currentUserDraft.id}>
-            <MessageContent variant="flat">
-              {currentUserDraft.maskedContent 
-              ?  (isMasked ? currentUserDraft.maskedContent : currentUserDraft.content)
+          <Message className="justify-end">
+            {
+              currentUserDraft.maskedContent 
+              ?  (
+                <MessageContent className="bg-neutral-800 text-foreground leading-relaxed px-4">
+                  {isMasked ? currentUserDraft.maskedContent : currentUserDraft.content}
+                </MessageContent>
+              )
               : <div className="space-y-2">
                   {/* Skeleton efekt */}
-                  <Skeleton className="h-4 w-[250px]" />
-                  <Skeleton className="h-4 w-[200px]" />
-                  <Skeleton className="h-4 w-[200px]" />
+                  <Skeleton className="h-2 w-[250px]" />
+                  <Skeleton className="h-2 w-[200px]" />
                 </div>
-              }
-            </MessageContent>
+            }
           </Message>
         )}
         {currentAiDraft && (
-          <Message from="assistant" key={currentAiDraft.id}>
+          <Message className="justify-start">
             <div className={cn("bg-transparent text-foreground prose rounded-lg p-2")}>
               {currentAiDraft.content
                 ? <Markdown className="leading-relaxed space-y-4 px-4" components={customComponents}>{currentAiDraft.content}</Markdown>
