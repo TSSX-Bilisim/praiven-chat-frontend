@@ -236,50 +236,51 @@ export function Messages({ chatId }: MessagesProps) {
                       <MessageContent className="bg-muted text-primary max-w-[85%] rounded-3xl px-5 py-2.5 sm:max-w-[75%]">
                         {isMasked ? currentUserDraft.maskedContent : currentUserDraft.content}
                       </MessageContent>
+
                     ) : (
                       <div className="space-y-2">
                         <Skeleton className="h-2 w-[250px]" />
                         <Skeleton className="h-2 w-[200px]" />
                       </div>
                     )}
+                    {currentUserDraft.status === "masked" && (
+                      <MessageActions className="self-end -ml-2.5 flex gap-1 opacity-0 transition-opacity duration-150 group-hover:opacity-100">
+                        {/* Copy */}
+                        <MessageAction tooltip="Copy to clipboard">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 rounded-full"
+                            onClick={() => navigator.clipboard.writeText(currentUserDraft.maskedContent || "")}
+                          >
+                            <Copy className="size-4" />
+                          </Button>
+                        </MessageAction>
+                        {/* Edit */}
+                        <MessageAction tooltip="Edit">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 rounded-full"
+                            onClick={() => console.log("Edit clicked")}
+                          >
+                            <Edit3 className="size-4" />
+                          </Button>
+                        </MessageAction>
+                        {/* Report */}
+                        <MessageAction tooltip="Report">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 rounded-full"
+                            onClick={() => console.log("Report clicked")}
+                          >
+                            <Flag className="size-4" />
+                          </Button>
+                        </MessageAction>
+                      </MessageActions>
+                    )}
                   </div>
-                  {currentUserDraft.status === "masked" && (
-                    <MessageActions className="self-end -ml-2.5 flex gap-1 opacity-0 transition-opacity duration-150 group-hover:opacity-100">
-                      {/* Copy */}
-                      <MessageAction tooltip="Copy to clipboard">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 rounded-full"
-                          onClick={() => navigator.clipboard.writeText(currentUserDraft.maskedContent || "")}
-                        >
-                          <Copy className="size-4" />
-                        </Button>
-                      </MessageAction>
-                      {/* Edit */}
-                      <MessageAction tooltip="Edit">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 rounded-full"
-                          onClick={() => console.log("Edit clicked")}
-                        >
-                          <Edit3 className="size-4" />
-                        </Button>
-                      </MessageAction>
-                      {/* Report */}
-                      <MessageAction tooltip="Report">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 rounded-full"
-                          onClick={() => console.log("Report clicked")}
-                        >
-                          <Flag className="size-4" />
-                        </Button>
-                      </MessageAction>
-                    </MessageActions>
-                  )}
                 </Message>
               )}
               {/* AI draft */}
@@ -296,54 +297,54 @@ export function Messages({ chatId }: MessagesProps) {
                     ) : (
                       <Loader variant="typing" />
                     )}
-                  </div>
-                  {currentAiDraft.status === "completed" && (
-                    <MessageActions className="self-start -ml-2.5 flex gap-1 opacity-0 transition-opacity duration-150 group-hover:opacity-100">
-                      {/* Copy */}
-                      <MessageAction tooltip="Copy to clipboard">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 rounded-full text-accent-foreground"
-                          onClick={() => navigator.clipboard.writeText(currentAiDraft.content)}
-                        >
-                          <Copy className="size-4" />
-                        </Button>
-                      </MessageAction>
-                      {/* Retry */}
-                      <MessageAction tooltip="Retry">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 rounded-full text-accent-foreground"
-                          onClick={() => console.log("Retry clicked")}
-                        >
-                          <RotateCcw className="size-4" />
-                        </Button>
-                      </MessageAction>
-                      {/* Like */}
-                      <MessageAction tooltip="Helpful">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 rounded-full text-accent-foreground"
-                        >
-                          <ThumbsUp className="size-4" />
-                        </Button>
-                      </MessageAction>
+                    {currentAiDraft.status === "completed" && (
+                      <MessageActions className="self-start -ml-2.5 flex gap-1 opacity-0 transition-opacity duration-150 group-hover:opacity-100">
+                        {/* Copy */}
+                        <MessageAction tooltip="Copy to clipboard">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 rounded-full text-accent-foreground"
+                            onClick={() => navigator.clipboard.writeText(currentAiDraft.content)}
+                          >
+                            <Copy className="size-4" />
+                          </Button>
+                        </MessageAction>
+                        {/* Retry */}
+                        <MessageAction tooltip="Retry">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 rounded-full text-accent-foreground"
+                            onClick={() => console.log("Retry clicked")}
+                          >
+                            <RotateCcw className="size-4" />
+                          </Button>
+                        </MessageAction>
+                        {/* Like */}
+                        <MessageAction tooltip="Helpful">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 rounded-full text-accent-foreground"
+                          >
+                            <ThumbsUp className="size-4" />
+                          </Button>
+                        </MessageAction>
 
-                      {/* Not helpful */}
-                      <MessageAction tooltip="Not helpful">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 rounded-full text-accent-foreground"
-                        >
-                          <ThumbsDown className="size-4" />
-                        </Button>
-                      </MessageAction>
-                    </MessageActions>
-                  )}
+                        {/* Not helpful */}
+                        <MessageAction tooltip="Not helpful">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 rounded-full text-accent-foreground"
+                          >
+                            <ThumbsDown className="size-4" />
+                          </Button>
+                        </MessageAction>
+                      </MessageActions>
+                    )}
+                  </div>
                 </Message>
               )}
             </div>
