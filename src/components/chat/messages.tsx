@@ -18,14 +18,13 @@ const customComponents: Partial<Components> = {
     const match = /language-(\w+)/.exec(className || "");
     const language = match ? match[1] : '';
     return (
-        <div className="w-full max-w-5xl">
+        <div className="w-full max-w-5xl py-4">
           <CodeBlock>
             <CodeBlockGroup className="border-border border-b py-2 pr-2 pl-4">
               <div className="flex items-center gap-2">
                 <div className="bg-primary/10 text-primary rounded px-2 py-1 text-xs font-medium">
                   {language}
                 </div>
-                <span className="text-muted-foreground text-sm">counter.tsx</span>
               </div>
               <Button
                 variant="ghost"
