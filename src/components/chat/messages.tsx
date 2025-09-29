@@ -56,7 +56,7 @@ export function Messages({ chatId }: MessagesProps) {
   if (error) return <p>Error: {error.message}</p>
 
   return (
-    <div ref={chatContainerRef} className="relative w-full overflow-y-auto">
+    <div ref={chatContainerRef} className="relative flex-1 overflow-y-auto">
       <ChatContainerRoot className="h-full">
         <ChatContainerContent className="space-y-6 px-5 py-12">
         {currentMessages?.map((message) => {
@@ -64,19 +64,25 @@ export function Messages({ chatId }: MessagesProps) {
           return (
             <Message
               key={message.id}
-              className={
-                message.role === "user" ? "justify-end" : "justify-start"
-              }
+              className={cn(
+                "mx-auto flex w-full max-w-3xl flex-col gap-2 px-6",
+                isAssistant ? "items-start" : "items-end"
+              )}
             >
               {isAssistant 
                 ? (
-                  <MessageContent className="bg-neutral-800 text-foreground roundedn-lg p-2">
-                    {message.maskedContent && isMasked ? message.maskedContent : message.content}
-                  </MessageContent>
+                  <div className="group flex flex-col items-end gap-1">
+                    <MessageContent className="bg-muted text-primary max-w-[85%] rounded-3xl px-5 py-2.5 sm:max-w-[75%]">
+                      {message.maskedContent && isMasked ? message.maskedContent : message.content}
+                    </MessageContent>
+                  </div>
                   )
                 : (
-                  <div className="bg-secondary text-foreground prose rounded-lg p-2">
-                    <Markdown components={customComponents}>
+                  <div className="group flex w-full flex-col gap-0">
+                    <Markdown
+                      components={customComponents} 
+                      className="text-foreground prose flex-1 rounded-lg bg-transparent p-0"
+                    >
                       {message.content}
                     </Markdown>
                   </div>
@@ -87,28 +93,38 @@ export function Messages({ chatId }: MessagesProps) {
         })}
         {/* yeni mesajlar */}
         {(currentUserDraft) &&(
-          <Message className="justify-end">
-            {
-              currentUserDraft.maskedContent 
-              ?  (
-                <MessageContent className="bg-neutral-800 text-foreground leading-relaxed px-4">
-                  {isMasked ? currentUserDraft.maskedContent : currentUserDraft.content}
-                </MessageContent>
-              )
-              : <div className="space-y-2">
-                  {/* Skeleton efekt */}
-                  <Skeleton className="h-2 w-[250px]" />
-                  <Skeleton className="h-2 w-[200px]" />
-                </div>
-            }
+          <Message
+            className="mx-auto flex w-full max-w-3xl flex-col gap-2 px-6 items-end"
+          >
+            <div className="group flex flex-col items-end gap-1">
+              {
+                currentUserDraft.maskedContent 
+                ?  (
+                  <MessageContent className="bg-muted text-primary max-w-[85%] rounded-3xl px-5 py-2.5 sm:max-w-[75%]">
+                    {isMasked ? currentUserDraft.maskedContent : currentUserDraft.content}
+                  </MessageContent>
+                )
+                : <div className="space-y-2">
+                    {/* Skeleton efekt */}
+                    <Skeleton className="h-2 w-[250px]" />
+                    <Skeleton className="h-2 w-[200px]" />
+                  </div>
+              }
+            </div>
           </Message>
         )}
         {currentAiDraft && (
-          <Message className="justify-start">
-            <div className={cn("bg-transparent text-foreground prose rounded-lg p-2")}>
+          <Message className="mx-auto flex w-full max-w-3xl flex-col gap-2 px-6 items-start">
+            <div className="group flex w-full flex-col gap-0">
               {currentAiDraft.content
-                ? <Markdown className="leading-relaxed space-y-4 px-4" components={customComponents}>{currentAiDraft.content}</Markdown>
-                : <Loader variant="typing" />}
+                ? <Markdown
+                    components={customComponents} 
+                    className="text-foreground prose flex-1 rounded-lg bg-transparent p-0"
+                  >
+                    {currentAiDraft.content}
+                  </Markdown>
+                : <Loader variant="typing" />
+              }
             </div>
           </Message>
         )}
