@@ -8,6 +8,7 @@ import { ScrollButton } from "../ui/scroll-button";
 import { cn } from "@/lib/utils";
 import { Markdown } from "../ui/markdown";
 import type { Components } from "react-markdown";
+import { Skeleton } from "../ui/skeleton";
 
 const customComponents: Partial<Components> = {
   h3: ({ children }) => (
@@ -74,7 +75,15 @@ export function Messages({ chatId }: MessagesProps) {
         {(currentUserDraft) &&(
           <Message from="user" key={currentUserDraft.id}>
             <MessageContent variant="flat">
-              {currentUserDraft.maskedContent && isMasked ? currentUserDraft.maskedContent : currentUserDraft.content}
+              {currentUserDraft.maskedContent 
+              ?  (isMasked ? currentUserDraft.maskedContent : currentUserDraft.content)
+              : <div className="space-y-2">
+                  {/* Skeleton efekt */}
+                  <Skeleton className="h-4 w-[250px]" />
+                  <Skeleton className="h-4 w-[200px]" />
+                  <Skeleton className="h-4 w-[200px]" />
+                </div>
+              }
             </MessageContent>
           </Message>
         )}
