@@ -65,7 +65,7 @@ export function Messages({ chatId }: MessagesProps) {
             <Message
               key={message.id}
               className={cn(
-                "mx-auto flex w-full max-w-3xl flex-col gap-2 px-6",
+                "mx-auto flex w-full max-w-5xl flex-col gap-2 px-6",
                 isAssistant ? "items-start" : "items-end"
               )}
             >
@@ -94,7 +94,7 @@ export function Messages({ chatId }: MessagesProps) {
         {/* yeni mesajlar */}
         {(currentUserDraft) &&(
           <Message
-            className="mx-auto flex w-full max-w-3xl flex-col gap-2 px-6 items-end"
+            className="mx-auto flex w-full max-w-5xl flex-col gap-2 px-6 items-end"
           >
             <div className="group flex flex-col w-full items-end gap-1">
               {
@@ -114,7 +114,7 @@ export function Messages({ chatId }: MessagesProps) {
           </Message>
         )}
         {currentAiDraft && (
-          <Message className="mx-auto flex w-full max-w-3xl flex-col gap-2 px-6 items-start">
+          <Message className="mx-auto flex w-full max-w-5xl flex-col gap-2 px-6 items-start">
             <div className="group flex w-full flex-col gap-0">
               {currentAiDraft.content
                 ? <Markdown
