@@ -128,7 +128,7 @@ export function Messages({ chatId }: MessagesProps) {
                     >
                       {message.content}
                     </Markdown>
-                    <MessageActions className="self-end">
+                    <MessageActions className="self-start">
                       <MessageAction tooltip="Copy to clipboard" side="left">
                         <Button
                           variant="ghost"
@@ -147,7 +147,7 @@ export function Messages({ chatId }: MessagesProps) {
                     <MessageContent className="bg-muted text-primary max-w-[85%] rounded-3xl px-5 py-2.5 sm:max-w-[75%]">
                       {message.maskedContent && isMasked ? message.maskedContent : message.content}
                     </MessageContent>
-                    <MessageActions className="self-end justify-start justify-items-start">
+                    <MessageActions className="self-end">
                       <MessageAction tooltip="Copy to clipboard">
                         <Button
                           variant="ghost"
@@ -192,7 +192,7 @@ export function Messages({ chatId }: MessagesProps) {
                     }
                   </div>
                   {currentUserDraft.status === "masked" && (
-                    <MessageActions className="self-start">
+                    <MessageActions className="self-end">
                       <MessageAction tooltip="Copy to clipboard">
                         <Button
                           variant="ghost"
@@ -221,7 +221,7 @@ export function Messages({ chatId }: MessagesProps) {
                     }
                   </div>
                   {currentAiDraft.status === "completed" && (
-                    <MessageActions className="self-end">
+                    <MessageActions className="self-start">
                       <MessageAction tooltip="Copy to clipboard">
                         <Button
                           variant="ghost"
