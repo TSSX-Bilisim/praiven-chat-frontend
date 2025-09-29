@@ -192,8 +192,8 @@ export function Messages({ chatId }: MessagesProps) {
                     }
                   </div>
                   {currentUserDraft.status === "masked" && (
-                    <MessageActions className="self-start">
-                      <MessageAction tooltip="Copy to clipboard" side="left">
+                    <MessageActions className="justify-start">
+                      <MessageAction tooltip="Copy to clipboard">
                         <Button
                           variant="ghost"
                           size="icon"
