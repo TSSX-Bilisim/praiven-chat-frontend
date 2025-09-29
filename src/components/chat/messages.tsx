@@ -121,14 +121,14 @@ export function Messages({ chatId }: MessagesProps) {
             >
               {isAssistant
                 ? (
-                  <div className="group flex w-full flex-col gap-0">
+                  <div className="group flex w-full flex-col gap-2">
                     <Markdown
                       components={customComponents} 
                       className="text-foreground prose flex-1 rounded-lg bg-transparent p-0"
                     >
                       {message.content}
                     </Markdown>
-                    <MessageActions className="self-start -ml-2.5 flex gap-0 opacity-0 transition-opacity duration-150 group-hover:opacity-100">
+                    <MessageActions className="self-start -ml-2.5 flex gap-1 opacity-0 transition-opacity duration-150 group-hover:opacity-100">
                       <MessageAction tooltip="Copy to clipboard" side="left">
                         <Button
                           variant="ghost"
@@ -183,7 +183,7 @@ export function Messages({ chatId }: MessagesProps) {
                     <MessageContent className="bg-muted text-primary max-w-[85%] rounded-3xl px-5 py-2.5 sm:max-w-[75%]">
                       {message.maskedContent && isMasked ? message.maskedContent : message.content}
                     </MessageContent>
-                    <MessageActions className="self-end -ml-2.5 flex gap-0 opacity-0 transition-opacity duration-150 group-hover:opacity-100">
+                    <MessageActions className="self-end -ml-2.5 flex gap-1 opacity-0 transition-opacity duration-150 group-hover:opacity-100">
                       <MessageAction tooltip="Copy to clipboard">
                         <Button
                           variant="ghost"
@@ -204,17 +204,17 @@ export function Messages({ chatId }: MessagesProps) {
                           <Edit3 className="size-4" />
                         </Button>
                       </MessageAction>
+                      <MessageAction tooltip="Report">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 rounded-full"
+                          onClick={() => console.log("Report clicked")}
+                        >
+                          <Flag className="size-4" />
+                        </Button>
+                      </MessageAction>
                     </MessageActions>
-                    <MessageAction tooltip="Report">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 rounded-full"
-                        onClick={() => console.log("Report clicked")}
-                      >
-                        <Flag className="size-4" />
-                      </Button>
-                    </MessageAction>
                   </div>
                 )
               }
@@ -248,7 +248,7 @@ export function Messages({ chatId }: MessagesProps) {
                     }
                   </div>
                   {currentUserDraft.status === "masked" && (
-                    <MessageActions className="self-end -ml-2.5 flex gap-0 opacity-0 transition-opacity duration-150 group-hover:opacity-100">
+                    <MessageActions className="self-end -ml-2.5 flex gap-1 opacity-0 transition-opacity duration-150 group-hover:opacity-100">
                       <MessageAction tooltip="Copy to clipboard">
                         <Button
                           variant="ghost"
@@ -297,7 +297,7 @@ export function Messages({ chatId }: MessagesProps) {
                     }
                   </div>
                   {currentAiDraft.status === "completed" && (
-                    <MessageActions className="self-start -ml-2.5 flex gap-0 opacity-0 transition-opacity duration-150 group-hover:opacity-100">
+                    <MessageActions className="self-start -ml-2.5 flex gap-1 opacity-0 transition-opacity duration-150 group-hover:opacity-100">
                       <MessageAction tooltip="Copy to clipboard">
                         <Button
                           variant="ghost"
