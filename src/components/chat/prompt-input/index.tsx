@@ -28,7 +28,12 @@ function PromptInput({ chatid }: { chatid: string }) {
         },
     });
 
-    const isLoading = !!userDraft[chatid]  || !!aiDraft[chatid];
+    const currentUserDraft = userDraft[chatid];
+    const currentAiDraft = aiDraft[chatid];
+
+    const isLoading = 
+      (currentAiDraft && currentAiDraft.status !== 'completed') || 
+      (currentUserDraft && currentUserDraft.status !== 'masked');
 
     function onSubmit(data: z.infer<typeof promptschema>) {
         sendMessage(chatid, data.content, data.modelId);
