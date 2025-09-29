@@ -30,11 +30,9 @@ function PromptInput({ chatid }: { chatid: string }) {
 
     const currentUserDraft = userDraft[chatid];
     const currentAiDraft = aiDraft[chatid];
-    console.log(currentAiDraft?.status, currentUserDraft?.status);
-    console.log(currentAiDraft, currentUserDraft);
-    const isLoading = 
-      (currentAiDraft?.status !== 'completed') || 
-      (currentUserDraft?.status !== 'masked');
+    const aiLoading = currentAiDraft ? currentAiDraft.status !== "completed" : false;
+    const userLoading = currentUserDraft ? currentUserDraft.status !== "masked" : false;
+    const isLoading = aiLoading || userLoading;
 
     function onSubmit(data: z.infer<typeof promptschema>) {
         sendMessage(chatid, data.content, data.modelId);
@@ -60,7 +58,7 @@ function PromptInput({ chatid }: { chatid: string }) {
               </div>
                 <PromptInputAction tooltip={isLoading ? "Stop generation" : "Send message"}
                 >
-                  <PromptSendButton isLoading={isLoading} />
+                  <PromptSendButton isLoading={isLoading ?? false} />
                 </PromptInputAction>
             </PromptInputActions>
           </Flex>
