@@ -304,7 +304,7 @@ export function Messages({ chatId }: MessagesProps) {
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="h-8 w-8 rounded-full text-accent-foreground"
+                            className="h-8 w-8 rounded-full"
                             onClick={() => navigator.clipboard.writeText(currentAiDraft.content)}
                           >
                             <Copy className="size-4" />
@@ -315,7 +315,7 @@ export function Messages({ chatId }: MessagesProps) {
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="h-8 w-8 rounded-full text-accent-foreground"
+                            className="h-8 w-8 rounded-full"
                             onClick={() => console.log("Retry clicked")}
                           >
                             <RotateCcw className="size-4" />
@@ -326,7 +326,7 @@ export function Messages({ chatId }: MessagesProps) {
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="h-8 w-8 rounded-full text-accent-foreground"
+                            className="h-8 w-8 rounded-full"
                           >
                             <ThumbsUp className="size-4" />
                           </Button>
@@ -337,7 +337,7 @@ export function Messages({ chatId }: MessagesProps) {
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="h-8 w-8 rounded-full text-accent-foreground"
+                            className="h-8 w-8 rounded-full"
                           >
                             <ThumbsDown className="size-4" />
                           </Button>
