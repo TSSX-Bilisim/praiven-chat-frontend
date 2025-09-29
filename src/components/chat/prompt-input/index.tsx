@@ -30,7 +30,7 @@ function PromptInput({ chatid }: { chatid: string }) {
 
     const currentUserDraft = userDraft[chatid];
     const currentAiDraft = aiDraft[chatid];
-
+    console.log(currentAiDraft?.status, currentUserDraft?.status);
     const isLoading = 
       (currentAiDraft && currentAiDraft.status !== 'completed') || 
       (currentUserDraft && currentUserDraft.status !== 'masked');

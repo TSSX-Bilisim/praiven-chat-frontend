@@ -100,7 +100,7 @@ export function Messages({ chatId }: MessagesProps) {
         { (currentAiDraft || currentUserDraft) && (
           <div
             ref={currentBlockRef}
-            style={{ minHeight: "80vh", display: "flex", flexDirection: "column" }}
+            className="h-full space-y-6"
           >
               {(currentUserDraft) &&(
                 <Message
