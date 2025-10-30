@@ -8,6 +8,9 @@ import { ThemeProvider } from 'next-themes';
 import ChatLayout from './layouts/chat';
 import NewChatPage from './pages/chat/new-chat';
 import ChatPage from './pages/chat';
+import DashboardPage from './pages/dashboard';
+import ProvidersPage from './pages/providers';
+import ModelsPage from './pages/models';
 import AuthLayout from './layouts/auth';
 import LoginPage from './pages/auth/login';
 import RegisterPage from './pages/auth/register';
@@ -23,6 +26,9 @@ createRoot(document.getElementById('root')!).render(
         <Route element={<ChatLayout />}>
           <Route path="/chat" element={<NewChatPage />} />
           <Route path="/chat/:chatId" element={<ChatPage />} />
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/providers" element={<ProvidersPage />} />
+          <Route path="/models" element={<ModelsPage />} />
         </Route>
         <Route element={<AuthLayout />}>
           <Route path="/login" element={<LoginPage />} />
