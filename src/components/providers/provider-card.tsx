@@ -1,16 +1,18 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Key, Edit, Power, PowerOff } from "lucide-react";
+import { Key, Edit, Power, PowerOff, Trash2 } from "lucide-react";
 import type { ProviderWithApiKey } from "@/lib/types/provider";
 
 type ProviderCardProps = {
   provider: ProviderWithApiKey;
   onEdit: (provider: ProviderWithApiKey) => void;
   onToggle: (provider: ProviderWithApiKey) => void;
+  onDelete: (provider: ProviderWithApiKey) => void;
+  isDeleting?: boolean;
 };
 
-export function ProviderCard({ provider, onEdit, onToggle }: ProviderCardProps) {
+export function ProviderCard({ provider, onEdit, onToggle, onDelete, isDeleting = false }: ProviderCardProps) {
   const getProviderColor = (name: string) => {
     switch (name) {
       case 'OPENAI':
@@ -59,33 +61,47 @@ export function ProviderCard({ provider, onEdit, onToggle }: ProviderCardProps) 
         </div>
       </div>
 
-      <div className="flex gap-2 mt-4">
+      <div className="space-y-2 mt-4">
+        <div className="flex gap-2">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => onEdit(provider)}
+            className="flex-1"
+            disabled={isDeleting}
+          >
+            <Edit className="h-4 w-4 mr-2" />
+            Edit API Key
+          </Button>
+          <Button 
+            variant={provider.isActive ? "destructive" : "default"}
+            size="sm" 
+            onClick={() => onToggle(provider)}
+            className="flex-1"
+            disabled={isDeleting}
+          >
+            {provider.isActive ? (
+              <>
+                <PowerOff className="h-4 w-4 mr-2" />
+                Deactivate
+              </>
+            ) : (
+              <>
+                <Power className="h-4 w-4 mr-2" />
+                Activate
+              </>
+            )}
+          </Button>
+        </div>
         <Button 
-          variant="outline" 
+          variant="destructive" 
           size="sm" 
-          onClick={() => onEdit(provider)}
-          className="flex-1"
+          onClick={() => onDelete(provider)}
+          className="w-full"
+          disabled={isDeleting}
         >
-          <Edit className="h-4 w-4 mr-2" />
-          Edit API Key
-        </Button>
-        <Button 
-          variant={provider.isActive ? "destructive" : "default"}
-          size="sm" 
-          onClick={() => onToggle(provider)}
-          className="flex-1"
-        >
-          {provider.isActive ? (
-            <>
-              <PowerOff className="h-4 w-4 mr-2" />
-              Deactivate
-            </>
-          ) : (
-            <>
-              <Power className="h-4 w-4 mr-2" />
-              Activate
-            </>
-          )}
+          <Trash2 className="h-4 w-4 mr-2" />
+          {isDeleting ? 'Deleting...' : 'Delete Provider'}
         </Button>
       </div>
     </Card>

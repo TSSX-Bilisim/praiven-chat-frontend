@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import type { EntityCategoryStats } from "@/lib/types/dashboard";
+import { useTheme } from "next-themes";
 
 type EntityCategoryChartProps = {
   data: EntityCategoryStats[];
@@ -20,7 +21,7 @@ const CustomLegend = (props: any) => {
             className="w-3 h-3 rounded-full"
             style={{ backgroundColor: entry.color }}
           />
-          <span className="text-sm font-medium text-white">
+          <span className="text-sm font-medium text-foreground">
             {entry.payload.category}
           </span>
         </div>
@@ -37,24 +38,24 @@ const CustomTooltip = ({ active, payload }: any) => {
   const formatNumber = (num: number) => new Intl.NumberFormat('en-US').format(num);
 
   return (
-    <div className="bg-gray-950/98 backdrop-blur-md border border-gray-700/80 rounded-md px-3 py-2 shadow-2xl">
+    <div className="bg-popover/98 backdrop-blur-md border border-border rounded-md px-3 py-2 shadow-2xl">
       <div className="space-y-1">
         <div className="flex items-center gap-2">
           <div 
             className="w-2 h-2 rounded-full"
             style={{ backgroundColor: data.payload.fill }}
           />
-          <span className="text-white font-semibold text-xs">{data.payload.category}</span>
+          <span className="text-foreground font-semibold text-xs">{data.payload.category}</span>
         </div>
         <div className="flex items-center justify-between gap-4 pl-4">
-          <span className="text-gray-400 text-xs">Count:</span>
-          <span className="text-white font-bold text-xs tabular-nums">
+          <span className="text-muted-foreground text-xs">Count:</span>
+          <span className="text-foreground font-bold text-xs tabular-nums">
             {formatNumber(data.value)}
           </span>
         </div>
         <div className="flex items-center justify-between gap-4 pl-4">
-          <span className="text-gray-400 text-xs">Percentage:</span>
-          <span className="text-emerald-400 font-bold text-xs tabular-nums">
+          <span className="text-muted-foreground text-xs">Percentage:</span>
+          <span className="text-emerald-500 dark:text-emerald-400 font-bold text-xs tabular-nums">
             {data.payload.percentage}%
           </span>
         </div>
@@ -64,6 +65,14 @@ const CustomTooltip = ({ active, payload }: any) => {
 };
 
 export function EntityCategoryChart({ data }: EntityCategoryChartProps) {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+  
+  // Theme-aware colors
+  const labelLineColor = isDark ? '#666' : '#9ca3af';
+  const labelColor = isDark ? '#fff' : '#1f2937';
+  const strokeColor = isDark ? '#1a1a1a' : '#f3f4f6';
+
   return (
     <Card className="p-6 shadow-md hover:shadow-xl transition-shadow duration-300">
       <div className="mb-6">
@@ -85,7 +94,7 @@ export function EntityCategoryChart({ data }: EntityCategoryChartProps) {
             cx="50%"
             cy="50%"
             labelLine={{
-              stroke: '#666',
+              stroke: labelLineColor,
               strokeWidth: 1
             }}
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -100,7 +109,7 @@ export function EntityCategoryChart({ data }: EntityCategoryChartProps) {
                 <text 
                   x={x} 
                   y={y} 
-                  fill="#fff"
+                  fill={labelColor}
                   textAnchor={x > cx ? 'start' : 'end'} 
                   dominantBaseline="central"
                   style={{ fontSize: '12px', fontWeight: 700 }}
@@ -112,7 +121,7 @@ export function EntityCategoryChart({ data }: EntityCategoryChartProps) {
             outerRadius={90}
             innerRadius={45}
             dataKey="count"
-            stroke="#1a1a1a"
+            stroke={strokeColor}
             strokeWidth={2}
             animationDuration={800}
           >

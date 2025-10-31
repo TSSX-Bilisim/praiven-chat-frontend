@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Area, AreaChart } from 'recharts';
 import type { UsageByDate } from "@/lib/types/dashboard";
+import { useTheme } from "next-themes";
 
 type UsageChartProps = {
   data: UsageByDate[];
@@ -8,6 +9,15 @@ type UsageChartProps = {
 };
 
 export function UsageChart({ data, title }: UsageChartProps) {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+  
+  // Theme-aware colors
+  const gridColor = isDark ? '#444' : '#e5e7eb';
+  const borderColor = isDark ? '#444' : '#d1d5db';
+  const bgColor = isDark ? '#1a1a1a' : '#ffffff';
+  const textColor = isDark ? '#fff' : '#1f2937';
+
   return (
     <Card className="p-6 shadow-md hover:shadow-xl transition-shadow duration-300">
       <div className="flex items-center justify-between mb-6">
@@ -28,11 +38,11 @@ export function UsageChart({ data, title }: UsageChartProps) {
               <stop offset="95%" stopColor="#06b6d4" stopOpacity={0.1}/>
             </linearGradient>
           </defs>
-          <CartesianGrid strokeDasharray="3 3" stroke="#444" opacity={0.5} />
+          <CartesianGrid strokeDasharray="3 3" stroke={gridColor} opacity={0.5} />
           <XAxis 
             dataKey="date" 
-            stroke="#999"
-            tick={{ fill: '#fff', fontSize: 12, fontWeight: 600 }}
+            stroke={gridColor}
+            tick={{ fill: textColor, fontSize: 12, fontWeight: 600 }}
             interval={2}
             tickFormatter={(value) => {
               const date = new Date(value);
@@ -54,11 +64,11 @@ export function UsageChart({ data, title }: UsageChartProps) {
           />
           <Tooltip 
             contentStyle={{ 
-              backgroundColor: '#1a1a1a',
-              border: '1px solid #444',
+              backgroundColor: bgColor,
+              border: `1px solid ${borderColor}`,
               borderRadius: '8px',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.5)',
-              color: '#fff'
+              boxShadow: isDark ? '0 4px 12px rgba(0,0,0,0.5)' : '0 4px 12px rgba(0,0,0,0.1)',
+              color: textColor
             }}
           />
           <Legend />

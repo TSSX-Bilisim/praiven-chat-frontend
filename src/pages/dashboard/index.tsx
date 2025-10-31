@@ -1,37 +1,69 @@
-import { useEffect, useState } from "react";
 import { StatsCard } from "@/components/dashboard/stats-card";
 import { UsageChart } from "@/components/dashboard/usage-chart";
 import { ProviderUsageChart } from "@/components/dashboard/provider-usage-chart";
 import { ModelUsageTable } from "@/components/dashboard/model-usage-table";
 import { EntityStatsChart } from "@/components/dashboard/entity-stats-chart";
 import { DollarSign, MessageSquare, Hash, Shield } from "lucide-react";
-import { getMockDashboardStats } from "@/lib/mock/dashboard-data";
 import type { DashboardStats } from "@/lib/types/dashboard";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useQuery } from "@tanstack/react-query";
+import { fetchDashboardStats } from "@/lib/api/ai";
+import { Loader } from "@/components/ui/loader";
 
 export default function DashboardPage() {
-  const [stats, setStats] = useState<DashboardStats | null>(null);
   const isMobile = useIsMobile();
 
-  useEffect(() => {
-    // Simulate API call
-    const loadStats = async () => {
-      // In real app, this would be: const response = await apiFetch<DashboardStatsResponse>('/dashboard/stats');
-      const mockStats = getMockDashboardStats();
-      setStats(mockStats);
-    };
+  // Fetch dashboard stats using React Query
+  const { data: statsResponse, isLoading, error } = useQuery({
+    queryKey: ['dashboard-stats'],
+    queryFn: async () => {
+      const response = await fetchDashboardStats();
+      if (!response.success) {
+        throw new Error(response.error || 'Failed to fetch dashboard stats');
+      }
+      return response.data as DashboardStats;
+    },
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    refetchInterval: 1000 * 60 * 5, // Auto-refresh every 5 minutes
+  });
 
-    loadStats();
-  }, []);
-
-  if (!stats) {
+  if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="text-lg">Loading dashboard...</div>
-      </div>
+      <main className="flex w-full h-screen flex-col overflow-hidden">
+        <header className="bg-background z-10 flex h-16 w-full shrink-0 items-center justify-between border-b px-4">
+          <div className="flex items-center gap-2">
+            {isMobile && <SidebarTrigger />}
+            <h1 className="text-xl font-semibold">Dashboard</h1>
+          </div>
+        </header>
+        <div className="flex-1 flex items-center justify-center">
+          <Loader />
+        </div>
+      </main>
     );
   }
+
+  if (error) {
+    return (
+      <main className="flex w-full h-screen flex-col overflow-hidden">
+        <header className="bg-background z-10 flex h-16 w-full shrink-0 items-center justify-between border-b px-4">
+          <div className="flex items-center gap-2">
+            {isMobile && <SidebarTrigger />}
+            <h1 className="text-xl font-semibold">Dashboard</h1>
+          </div>
+        </header>
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <p className="text-destructive mb-2">Error loading dashboard</p>
+            <p className="text-sm text-muted-foreground">{error.message}</p>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  const stats = statsResponse!;
 
   const formatNumber = (num: number) => {
     return new Intl.NumberFormat('en-US').format(num);
