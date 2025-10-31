@@ -18,11 +18,20 @@ type ProviderDialogProps = {
   provider?: ProviderWithApiKey | null;
   onSave: (data: { id?: number; name?: string; apiKey: string }) => void;
   mode: 'create' | 'edit';
+  isLoading?: boolean;
 };
 
-export function ProviderDialog({ open, onOpenChange, provider, onSave, mode }: ProviderDialogProps) {
-  const [apiKey, setApiKey] = useState(provider?.apiKey || '');
+export function ProviderDialog({ open, onOpenChange, provider, onSave, mode, isLoading = false }: ProviderDialogProps) {
+  const [apiKey, setApiKey] = useState('');
   const [selectedProvider, setSelectedProvider] = useState<'OPENAI' | 'CLAUDE' | 'GEMINI'>('OPENAI');
+
+  // Reset API key when dialog opens/closes or provider changes
+  const handleOpenChange = (newOpen: boolean) => {
+    if (!newOpen) {
+      setApiKey('');
+    }
+    onOpenChange(newOpen);
+  };
 
   const handleSave = () => {
     if (mode === 'edit' && provider) {
@@ -30,12 +39,11 @@ export function ProviderDialog({ open, onOpenChange, provider, onSave, mode }: P
     } else {
       onSave({ name: selectedProvider, apiKey });
     }
-    onOpenChange(false);
-    setApiKey('');
+    // Don't close dialog here - let the parent handle it after successful save
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
@@ -43,8 +51,8 @@ export function ProviderDialog({ open, onOpenChange, provider, onSave, mode }: P
           </DialogTitle>
           <DialogDescription>
             {mode === 'edit' 
-              ? 'Update the API key for this provider.'
-              : 'Add a new AI provider by entering its API key.'}
+              ? 'Enter a new API key for this provider. This will update the provider configuration and refresh available models.'
+              : 'Add a new AI provider by entering its API key. Models will be automatically imported from the provider.'}
           </DialogDescription>
         </DialogHeader>
 
@@ -75,27 +83,31 @@ export function ProviderDialog({ open, onOpenChange, provider, onSave, mode }: P
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="apiKey">API Key</Label>
+            <Label htmlFor="apiKey">
+              {mode === 'edit' ? 'New API Key' : 'API Key'}
+            </Label>
             <Input
               id="apiKey"
               type="password"
-              placeholder="sk-..."
+              placeholder={mode === 'edit' ? 'Enter new API key...' : 'sk-...'}
               value={apiKey}
               onChange={(e) => setApiKey(e.target.value)}
               className="font-mono"
             />
             <p className="text-xs text-muted-foreground">
-              Your API key will be securely stored and encrypted.
+              {mode === 'edit' 
+                ? 'The API key will be validated before updating.'
+                : 'Your API key will be securely stored and validated.'}
             </p>
           </div>
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+          <Button variant="outline" onClick={() => handleOpenChange(false)} disabled={isLoading}>
             Cancel
           </Button>
-          <Button onClick={handleSave} disabled={!apiKey}>
-            {mode === 'edit' ? 'Update' : 'Add'} Provider
+          <Button onClick={handleSave} disabled={!apiKey || isLoading}>
+            {isLoading ? 'Saving...' : mode === 'edit' ? 'Update API Key' : 'Add Provider'}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
 import type { UsageByProvider } from "@/lib/types/dashboard";
+import { useTheme } from "next-themes";
 
 type ProviderUsageChartProps = {
   data: UsageByProvider[];
@@ -25,33 +26,33 @@ const CustomTooltip = ({ active, payload }: any) => {
   };
 
   return (
-    <div className="bg-gray-900/95 backdrop-blur-sm border border-gray-700 rounded-lg p-4 shadow-xl">
-      <div className="flex items-center gap-2 mb-3 pb-2 border-b border-gray-700">
+    <div className="bg-popover/95 backdrop-blur-sm border border-border rounded-lg p-4 shadow-xl">
+      <div className="flex items-center gap-2 mb-3 pb-2 border-b border-border">
         <div 
           className="w-3 h-3 rounded-full" 
           style={{ backgroundColor: providerColor }}
         />
-        <p className="font-bold text-white text-sm">{data.providerName}</p>
+        <p className="font-bold text-foreground text-sm">{data.providerName}</p>
       </div>
       
       <div className="space-y-2">
         <div className="flex items-center justify-between gap-4">
-          <span className="text-gray-400 text-xs">Total Tokens:</span>
-          <span className="text-white font-semibold text-sm tabular-nums">
+          <span className="text-muted-foreground text-xs">Total Tokens:</span>
+          <span className="text-foreground font-semibold text-sm tabular-nums">
             {formatNumber(data.totalTokens)}
           </span>
         </div>
         
         <div className="flex items-center justify-between gap-4">
-          <span className="text-gray-400 text-xs">Requests:</span>
-          <span className="text-white font-semibold text-sm tabular-nums">
+          <span className="text-muted-foreground text-xs">Requests:</span>
+          <span className="text-foreground font-semibold text-sm tabular-nums">
             {formatNumber(data.totalRequests)}
           </span>
         </div>
         
-        <div className="flex items-center justify-between gap-4 pt-2 border-t border-gray-700">
-          <span className="text-gray-400 text-xs">Total Cost:</span>
-          <span className="text-emerald-400 font-bold text-sm tabular-nums">
+        <div className="flex items-center justify-between gap-4 pt-2 border-t border-border">
+          <span className="text-muted-foreground text-xs">Total Cost:</span>
+          <span className="text-emerald-500 dark:text-emerald-400 font-bold text-sm tabular-nums">
             ${formatNumber(data.totalCost)}
           </span>
         </div>
@@ -73,7 +74,7 @@ const CustomLegend = ({ payload }: CustomLegendProps) => {
             className="w-3 h-3 rounded-sm"
             style={{ backgroundColor: entry.color }}
           />
-          <span className="text-sm font-medium text-white">
+          <span className="text-sm font-medium text-foreground">
             {entry.value}
           </span>
         </div>
@@ -83,6 +84,14 @@ const CustomLegend = ({ payload }: CustomLegendProps) => {
 };
 
 export function ProviderUsageChart({ data, title }: ProviderUsageChartProps) {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+
+  // Theme-aware colors
+  const axisColor = isDark ? '#999' : '#6b7280';
+  const tickColor = isDark ? '#fff' : '#374151';
+  const cursorFill = isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)';
+
   return (
     <Card className="p-6 shadow-md hover:shadow-xl transition-shadow duration-300">
       <div className="mb-6">
@@ -108,16 +117,16 @@ export function ProviderUsageChart({ data, title }: ProviderUsageChartProps) {
           <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
           <XAxis 
             dataKey="providerName" 
-            stroke="#999"
-            tick={{ fill: '#fff', fontSize: 15, fontWeight: 700 }}
+            stroke={axisColor}
+            tick={{ fill: tickColor, fontSize: 15, fontWeight: 700 }}
           />
           <YAxis 
-            stroke="#999"
-            tick={{ fill: '#fff', fontSize: 13, fontWeight: 600 }}
+            stroke={axisColor}
+            tick={{ fill: tickColor, fontSize: 13, fontWeight: 600 }}
           />
           <Tooltip 
             content={<CustomTooltip />}
-            cursor={{ fill: 'rgba(255, 255, 255, 0.05)' }}
+            cursor={{ fill: cursorFill }}
           />
           <Legend content={<CustomLegend />} />
           <Bar dataKey="totalTokens" name="Total Tokens" radius={[8, 8, 0, 0]}>

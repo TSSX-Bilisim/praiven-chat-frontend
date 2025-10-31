@@ -1,34 +1,65 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { ModelCard } from "@/components/models/model-card";
 import { Badge } from "@/components/ui/badge";
-import { getMockModels } from "@/lib/mock/provider-data";
 import type { ModelWithProvider } from "@/lib/types/provider";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { fetchAllModels, updateModel, type ModelResponse } from "@/lib/api/ai";
+import { Loader } from "@/components/ui/loader";
 
 export default function ModelsPage() {
-  const [models, setModels] = useState<ModelWithProvider[]>([]);
   const [filterProvider, setFilterProvider] = useState<string | null>(null);
   const [filterStatus, setFilterStatus] = useState<'all' | 'active' | 'inactive'>('all');
   const isMobile = useIsMobile();
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    // Simulate API call
-    const loadModels = async () => {
-      // In real app: const response = await apiFetch<{ models: ModelWithProvider[] }>('/ai/models');
-      const mockModels = getMockModels();
-      setModels(mockModels);
-    };
+  // Fetch all models using React Query
+  const { data: modelsData, isLoading, error } = useQuery({
+    queryKey: ['all-models'],
+    queryFn: async () => {
+      const response = await fetchAllModels();
+      if (!response.success) {
+        throw new Error(response.error || 'Failed to fetch models');
+      }
+      // Transform backend data to frontend format
+      const backendModels = response.data?.models || [];
+      return backendModels.map((model: ModelResponse): ModelWithProvider => ({
+        id: model.id,
+        name: model.name,
+        description: model.description,
+        providerId: model.providerId,
+        providerName: model.provider?.name || 'UNKNOWN',
+        isActive: model.isActive,
+        pricePerToken: model.pricePerToken,
+        defaultLimit: model.defaultLimit,
+        updatedAt: model.updatedAt || new Date(),
+        createdAt: model.createdAt || new Date(),
+      }));
+    },
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
 
-    loadModels();
-  }, []);
+  // Mutation for updating model
+  const updateModelMutation = useMutation({
+    mutationFn: async ({ id, isActive }: { id: number; isActive: boolean }) => {
+      const response = await updateModel(id, { isActive });
+      if (!response.success) {
+        throw new Error(response.error || 'Failed to update model');
+      }
+      return response;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['all-models'] });
+      queryClient.invalidateQueries({ queryKey: ['available-models'] });
+    },
+  });
 
   const handleToggle = async (model: ModelWithProvider) => {
-    // In real app: await apiFetch(`/ai/model/${model.id}`, { method: 'PATCH', body: JSON.stringify({ isActive: !model.isActive }) });
-    setModels(models.map(m => 
-      m.id === model.id ? { ...m, isActive: !m.isActive } : m
-    ));
+    updateModelMutation.mutate({ id: model.id, isActive: !model.isActive });
   };
+
+  const models = modelsData || [];
 
   // Get unique providers
   const providers = Array.from(new Set(models.map(m => m.providerName)));
@@ -49,6 +80,41 @@ export default function ModelsPage() {
     acc[model.providerName].push(model);
     return acc;
   }, {} as Record<string, ModelWithProvider[]>);
+
+  if (isLoading) {
+    return (
+      <main className="flex w-full h-screen flex-col overflow-hidden">
+        <header className="bg-background z-10 flex h-16 w-full shrink-0 items-center justify-between border-b px-4">
+          <div className="flex items-center gap-2">
+            {isMobile && <SidebarTrigger />}
+            <h1 className="text-xl font-semibold">AI Models</h1>
+          </div>
+        </header>
+        <div className="flex-1 flex items-center justify-center">
+          <Loader />
+        </div>
+      </main>
+    );
+  }
+
+  if (error) {
+    return (
+      <main className="flex w-full h-screen flex-col overflow-hidden">
+        <header className="bg-background z-10 flex h-16 w-full shrink-0 items-center justify-between border-b px-4">
+          <div className="flex items-center gap-2">
+            {isMobile && <SidebarTrigger />}
+            <h1 className="text-xl font-semibold">AI Models</h1>
+          </div>
+        </header>
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <p className="text-destructive mb-2">Error loading models</p>
+            <p className="text-sm text-muted-foreground">{error.message}</p>
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="flex w-full h-screen flex-col overflow-hidden">

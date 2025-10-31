@@ -1,30 +1,113 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { ProviderCard } from "@/components/providers/provider-card";
 import { ProviderDialog } from "@/components/providers/provider-dialog";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import { getMockProviders } from "@/lib/mock/provider-data";
-import type { ProviderWithApiKey } from "@/lib/types/provider";
+import type { ProviderWithApiKey, CreateProviderRequest } from "@/lib/types/provider";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { fetchAllProviders, updateProvider, createProvider, updateProviderApiKey, deleteProvider, type ProviderResponse } from "@/lib/api/ai";
+import { Loader } from "@/components/ui/loader";
 
 export default function ProvidersPage() {
-  const [providers, setProviders] = useState<ProviderWithApiKey[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedProvider, setSelectedProvider] = useState<ProviderWithApiKey | null>(null);
   const [dialogMode, setDialogMode] = useState<'create' | 'edit'>('create');
   const isMobile = useIsMobile();
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    // Simulate API call
-    const loadProviders = async () => {
-      // In real app: const response = await apiFetch<{ providers: ProviderWithApiKey[] }>('/ai/providers');
-      const mockProviders = getMockProviders();
-      setProviders(mockProviders);
-    };
+  // Fetch all providers using React Query
+  const { data: providersData, isLoading, error } = useQuery({
+    queryKey: ['all-providers'],
+    queryFn: async () => {
+      const response = await fetchAllProviders();
+      if (!response.success) {
+        throw new Error(response.error || 'Failed to fetch providers');
+      }
+      // Transform backend data to frontend format
+      const backendProviders = response.data?.providers || [];
+      return backendProviders.map((provider: ProviderResponse): ProviderWithApiKey => ({
+        id: provider.id,
+        name: provider.name,
+        apiKey: provider.apiKey ? `${provider.apiKey.slice(0, 3)}...${provider.apiKey.slice(-4)}` : undefined,
+        isActive: provider.isActive,
+        createdAt: provider.createdAt || new Date(),
+        updatedAt: provider.updatedAt || new Date(),
+      }));
+    },
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
 
-    loadProviders();
-  }, []);
+  // Mutation for updating provider (toggle active status)
+  const updateProviderMutation = useMutation({
+    mutationFn: async ({ id, isActive }: { id: number; isActive: boolean }) => {
+      const response = await updateProvider(id, { isActive });
+      if (!response.success) {
+        throw new Error(response.error || 'Failed to update provider');
+      }
+      return response;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['all-providers'] });
+      queryClient.invalidateQueries({ queryKey: ['available-providers'] });
+    },
+  });
+
+  // Mutation for creating provider
+  const createProviderMutation = useMutation({
+    mutationFn: async (data: CreateProviderRequest) => {
+      const response = await createProvider(data);
+      if (!response.success) {
+        throw new Error(response.error || 'Failed to create provider');
+      }
+      return response;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['all-providers'] });
+      queryClient.invalidateQueries({ queryKey: ['available-providers'] });
+      queryClient.invalidateQueries({ queryKey: ['all-models'] }); // Invalidate models cache too
+      queryClient.invalidateQueries({ queryKey: ['available-models'] });
+      setDialogOpen(false);
+      setSelectedProvider(null);
+    },
+  });
+
+  // Mutation for updating provider API key
+  const updateProviderApiKeyMutation = useMutation({
+    mutationFn: async ({ id, apiKey }: { id: number; apiKey: string }) => {
+      const response = await updateProviderApiKey(id, apiKey);
+      if (!response.success) {
+        throw new Error(response.error || 'Failed to update provider');
+      }
+      return response;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['all-providers'] });
+      queryClient.invalidateQueries({ queryKey: ['available-providers'] });
+      queryClient.invalidateQueries({ queryKey: ['all-models'] }); // Invalidate models cache too
+      queryClient.invalidateQueries({ queryKey: ['available-models'] });
+      setDialogOpen(false);
+      setSelectedProvider(null);
+    },
+  });
+
+  // Mutation for deleting provider
+  const deleteProviderMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const response = await deleteProvider(id);
+      if (!response.success) {
+        throw new Error(response.error || 'Failed to delete provider');
+      }
+      return response;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['all-providers'] });
+      queryClient.invalidateQueries({ queryKey: ['available-providers'] });
+      queryClient.invalidateQueries({ queryKey: ['all-models'] }); // Invalidate models cache too
+      queryClient.invalidateQueries({ queryKey: ['available-models'] });
+    },
+  });
 
   const handleEdit = (provider: ProviderWithApiKey) => {
     setSelectedProvider(provider);
@@ -33,33 +116,29 @@ export default function ProvidersPage() {
   };
 
   const handleToggle = async (provider: ProviderWithApiKey) => {
-    // In real app: await apiFetch(`/ai/provider/${provider.id}`, { method: 'PATCH', body: JSON.stringify({ isActive: !provider.isActive }) });
-    setProviders(providers.map(p => 
-      p.id === provider.id ? { ...p, isActive: !p.isActive } : p
-    ));
+    updateProviderMutation.mutate({ id: provider.id, isActive: !provider.isActive });
   };
 
   const handleSave = async (data: { id?: number; name?: string; apiKey: string }) => {
     if (data.id) {
-      // Edit existing provider
-      // In real app: await apiFetch(`/ai/provider/${data.id}`, { method: 'PATCH', body: JSON.stringify({ apiKey: data.apiKey }) });
-      setProviders(providers.map(p => 
-        p.id === data.id ? { ...p, apiKey: `${data.apiKey.slice(0, 3)}...${data.apiKey.slice(-4)}` } : p
-      ));
+      // Edit existing provider - update API key
+      updateProviderApiKeyMutation.mutate({
+        id: data.id,
+        apiKey: data.apiKey,
+      });
     } else {
       // Create new provider
-      // In real app: await apiFetch('/ai/provider', { method: 'POST', body: JSON.stringify({ name: data.name, apiKey: data.apiKey }) });
-      const newProvider: ProviderWithApiKey = {
-        id: providers.length + 1,
-        name: data.name!,
-        apiKey: `${data.apiKey.slice(0, 3)}...${data.apiKey.slice(-4)}`,
-        isActive: false,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
-      setProviders([...providers, newProvider]);
+      createProviderMutation.mutate({
+        name: data.name as 'OPENAI' | 'GEMINI' | 'CLAUDE',
+        apiKey: data.apiKey,
+      });
     }
-    setSelectedProvider(null);
+  };
+
+  const handleDelete = async (provider: ProviderWithApiKey) => {
+    if (window.confirm(`Are you sure you want to delete ${provider.name}? This will also delete all associated models.`)) {
+      deleteProviderMutation.mutate(provider.id);
+    }
   };
 
   const handleAddNew = () => {
@@ -67,6 +146,43 @@ export default function ProvidersPage() {
     setDialogMode('create');
     setDialogOpen(true);
   };
+
+  const providers = providersData || [];
+
+  if (isLoading) {
+    return (
+      <main className="flex w-full h-screen flex-col overflow-hidden">
+        <header className="bg-background z-10 flex h-16 w-full shrink-0 items-center justify-between border-b px-4">
+          <div className="flex items-center gap-2">
+            {isMobile && <SidebarTrigger />}
+            <h1 className="text-xl font-semibold">AI Providers</h1>
+          </div>
+        </header>
+        <div className="flex-1 flex items-center justify-center">
+          <Loader />
+        </div>
+      </main>
+    );
+  }
+
+  if (error) {
+    return (
+      <main className="flex w-full h-screen flex-col overflow-hidden">
+        <header className="bg-background z-10 flex h-16 w-full shrink-0 items-center justify-between border-b px-4">
+          <div className="flex items-center gap-2">
+            {isMobile && <SidebarTrigger />}
+            <h1 className="text-xl font-semibold">AI Providers</h1>
+          </div>
+        </header>
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <p className="text-destructive mb-2">Error loading providers</p>
+            <p className="text-sm text-muted-foreground">{error.message}</p>
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="flex w-full h-screen flex-col overflow-hidden">
@@ -76,7 +192,7 @@ export default function ProvidersPage() {
           {isMobile && <SidebarTrigger />}
           <h1 className="text-xl font-semibold">AI Providers</h1>
         </div>
-        <Button onClick={handleAddNew}>
+        <Button onClick={handleAddNew} disabled={createProviderMutation.isPending}>
           <Plus className="h-4 w-4 mr-2" />
           Add Provider
         </Button>
@@ -96,6 +212,8 @@ export default function ProvidersPage() {
                 provider={provider}
                 onEdit={handleEdit}
                 onToggle={handleToggle}
+                onDelete={handleDelete}
+                isDeleting={deleteProviderMutation.isPending}
               />
             ))}
           </div>
@@ -118,6 +236,7 @@ export default function ProvidersPage() {
         provider={selectedProvider}
         onSave={handleSave}
         mode={dialogMode}
+        isLoading={createProviderMutation.isPending || updateProviderApiKeyMutation.isPending}
       />
     </main>
   );
